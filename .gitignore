@@ -1,5 +1,5 @@
 # Files to ignore
-private/secrets/.env
+./private/.env
 
 # Folders to ignore
 # secrets/
