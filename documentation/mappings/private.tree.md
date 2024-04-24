@@ -6,15 +6,15 @@ This file will list the different sections inside the documentation folder with 
 
 ## [Private](/private/)
 
-### [Private](/private/) / *[Examples](/private/scripts/)*
+### [Private](/private/) / *[Scripts](/private/scripts/)*
 This folder contains examples for specific apps that are setup on the server.
 
 ---
 
-### [Documentation](/private/) / *[Mappings](/private/secrets/)*
+### [Documentation](/private/) / *[Secrets](/private/secrets/)*
 This folder contains definitions to help navigate the files and folders structure.
 
 ---
 
-### [Documentation](/private/) / *[Tasks](/private/example.env/)*
+### [Documentation](/private/) / *[.env](/private/example.env/)*
 This folder contains lists of things that have been completed and still need to be completed.
