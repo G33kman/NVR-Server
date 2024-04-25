@@ -1,9 +1,7 @@
-# Exclude the .gitignore file
-.gitignore
+# Ignore everything in the root directory
+/*
 
-# Exclude the src folder
-src/
-
-# Include the content within the example folder
-# but not the example folder itself
-!example/**
+# Except for the content of the example folder
+!/example/
+/example/*
+!/example/*
