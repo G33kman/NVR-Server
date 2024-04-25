@@ -3,4 +3,4 @@ src/
 
 # Include the content within the example folder
 # but not the example folder itself
-!example/*
+example/*
