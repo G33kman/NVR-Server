@@ -2,8 +2,8 @@
 
 <p align="center">
     <picture>
-        <source media="(prefers-color-scheme: dark)" srcset="/documentation/assets/images/docs-hero-image.jpg">
-        <img src="/documentation/assets/images/docs-hero-image.jpg" width="65%">
+        <source media="(prefers-color-scheme: dark)" srcset="/documentation/assets/images/hero/docs-hero-image.jpg">
+        <img src="/documentation/assets/images/hero/docs-hero-image.jpg" width="65%">
     </picture>
 </p>
 
