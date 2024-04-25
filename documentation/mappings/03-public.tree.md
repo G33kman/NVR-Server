@@ -18,20 +18,20 @@ This file lists the folders within the public folder with definitions.
 
 ## [Public](/public/)
 
-### [Private](/public/) | *[Scripts](/public/apps/)*
+### [Private](/public/) | *[Apps](/public/apps/)*
 This folder contains folders for each container app that will hold the data that should be persistent.
 
 ---
 
-### [Documentation](/public/) | *[Secrets](/public/compose/)*
+### [Documentation](/public/) | *[Compose](/public/compose/)*
 This folder contains the docker compose files that will be used to set the containers up.
 
 ---
 
-### [Documentation](/public/) | *[.env](/public/logs/)*
+### [Documentation](/public/) | *[Logs](/public/logs/)*
 This folder contains the log files for each of the container apps for review.
 
 ---
 
-### [Documentation](/public/) | *[.env](/public/shared/)*
+### [Documentation](/public/) | *[Shared](/public/shared/)*
 This folder contains files that are shared between the apps as well as things that should be shared between different server setups.
