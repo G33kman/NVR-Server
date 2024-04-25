@@ -1,3 +1,6 @@
+# Exclude the .gitignore file
+#.gitignore
+
 # Exclude the src folder
 src/
 
