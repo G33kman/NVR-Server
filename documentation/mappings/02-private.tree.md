@@ -19,14 +19,14 @@ This file lists the different sections inside the private folder with definition
 ## [Private](/private/)
 
 ### [Private](/private/) | *[Scripts](/private/scripts/)*
-This folder contains examples for specific apps that are setup on the server.
+This folder contains bash scripts that will be used on the server for automating anything for the setup.
 
 ---
 
 ### [Documentation](/private/) | *[Secrets](/private/secrets/)*
-This folder contains definitions to help navigate the files and folders structure.
+This folder contains secret files that would hold passwords and other similar information that shouldn't be viewed by anyone other than someone authorized to know specific information.
 
 ---
 
 ### [Documentation](/private/) | *[.env](/private/example.env/)*
-This folder contains lists of things that have been completed and still need to be completed.
+This file contains environment variables that will be used to be place information that is used throughout multiple files for organization and reusability.

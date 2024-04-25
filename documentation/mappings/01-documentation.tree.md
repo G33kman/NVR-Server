@@ -2,12 +2,12 @@
 
 <p align="center">
     <picture>
-        <source media="(prefers-color-scheme: dark)" srcset="/documentation/assets/images/docs-hero-image.jpg">
-        <img src="/documentation/assets/images/docs-hero-image.jpg" width="65%">
+        <source media="(prefers-color-scheme: dark)" srcset="/documentation/assets/images/public-hero-image.jpg">
+        <img src="/documentation/assets/images/public-hero-image.jpg" width="65%">
     </picture>
 </p>
 
-> An image of a computer on a desk reading some documents.
+> An image of a folder with a clipboard inside of it with a document clipped and documents around the folder with a pen to the left.
 
 ---
 
@@ -17,6 +17,7 @@ This file lists the different sections inside the documentation folder with defi
 > Header links can be clicked to visit the location for that section.
 
 ## [Documentation](/documentation/)
+This folder contains documentation about the files that setup an Ubuntu (headless) Server[^1]
 
 ### [Documentation](/documentation/) | *[Assets](/documentation/assets/)*
 This folder contains assets such as images that are used for the documentation for this project.
@@ -35,3 +36,7 @@ This folder contains definitions to help navigate the files and folders structur
 
 ### [Documentation](/documentation/) | *[Tasks](/documentation/tasks/)*
 This folder contains lists of things that have been completed and still need to be completed.
+
+---
+
+[^1]: Ubuntu Server Website - [link](https://ubuntu.com/download/server "Ubuntu Server Download Website")
