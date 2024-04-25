@@ -7,6 +7,8 @@
     </picture>
 </p>
 
+> An image of a folders laid out on a desk.
+
 This file lists the content that is located within the base directory for the Docker container setup for the Server.
 
 > [!TIP]
