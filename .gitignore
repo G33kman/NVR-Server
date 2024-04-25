@@ -1,5 +1,5 @@
 # Ignore everything in the root directory
-
+/
 
 # Except for the content of the example folder
 #!/
