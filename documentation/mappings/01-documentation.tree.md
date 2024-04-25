@@ -1,5 +1,4 @@
 # Introduction
-This file lists the different sections inside the documentation folder with definitions and examples as needed.
 
 <p align="center">
     <picture>
@@ -7,6 +6,10 @@ This file lists the different sections inside the documentation folder with defi
         <img src="/documentation/assets/images/docs-hero-image.jpg" width="65%">
     </picture>
 </p>
+
+> An image of a computer on a desk reading some documents.
+
+This file lists the different sections inside the documentation folder with definitions and examples as needed.
 
 > [!TIP]
 > Header links can be clicked to visit the location for that section.
