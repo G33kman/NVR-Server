@@ -1,0 +1,5 @@
+src/
+!example/README.md
+!example/documentation/
+!example/private/
+!example/public/
