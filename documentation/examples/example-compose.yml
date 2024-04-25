@@ -19,16 +19,20 @@ services:
     privileged: true  # Grant privileged mode. Don't use unless the container specifically requires it
     stdin_open: true  # Allow attaching to the standard input stream
     tty: true  # Allocate a pseudo-TTY
+    healthchecks:
+      test: ["bin/sh", "-c", "TEST CMD"]
+      interval: 60s
+      timeout: 60s
+      retries: 1
     labels:
       label-name: example-label  # Add custom labels typically used for Traefik routing
 
 # Define volumes (optional)
 volumes:
-  example-volume:
+  example_volume:
     external: true # Optionally use an existing volume
-
 
 # Define networks (optional)
 networks:
-  my-internal-network:
+  example-network:
     external: true  # Optionally connect to an existing network

@@ -1,0 +1,63 @@
+# Project Name
+name: nvr-server
+
+########################### SERVICES
+
+########################### Environment Variables
+env_file:
+  - ./private/.env
+
+########################### SECRETS
+#secrets:
+  # TRAEFIK
+  #basic_auth_credentials:
+  #  file: $SECRETS_DIR/basic_auth_credentials
+  # AUTHELIA
+  #authelia_jwt_secret:
+  #  file: $SECRETS_DIR/authelia_jwt_secret
+  #authelia_session_secret:
+  #  file: $SECRETS_DIR/authelia_session_secret
+  #authelia_storage_encryption_key:
+  #  file: $SECRETS_DIR/authelia_storage_encryption_key
+  #  file: $SECRETS_DIR/authelia_session_secret
+  #authelia_notifier_smtp_password_file:
+  #  file: $SECRETS_DIR/authelia_notifier_smtp_password_key
+  # AUTHELIA_DUO
+  #authelia_dui_api_integration_key:
+  #  file: $SECRETS_DIR/authelia_integration_key
+  #authelia_duo_api_key:
+  #  file: $SECRETS_DIR/authelia_duo_api_secret_key
+
+########################### NETWORKS
+networks:
+  private:
+    external: true
+  backend:
+    external: true
+  frontend:
+    external: true
+
+########################### VOLUMES
+volumes:
+  portainer_data:
+    external: true
+  traefik_data:
+    external: true
+
+########################### INCLUDES
+include:
+  # CORE
+  - $COMPOSE_DIR/socket-compose.yaml
+  #- $COMPOSE_DIR/traefik-compose.yaml
+  #- $COMPOSE_DIR/authelia-compose.yaml
+  - $COMPOSE_DIR/portainer-compose.yaml
+  # SECURITY
+  # - $COMPOSE_DIR/crowdsec-compose.yaml
+  # - $COMPOSE_DIR/traefik-bouncer-compose.yaml # MAYBE
+  # FRONTEND
+  #- $COMPOSE_DIR/homepage-compose.yaml
+  # MONITORING
+  # - $COMPOSE_DIR/grafana-compose.yaml # MAYBE
+  #- $COMPOSE_DIR/dozzle-compose.yaml
+  # ADMIN
+  # - $COMPOSE_DIR/it-tools-compose.yaml # MAYBE
