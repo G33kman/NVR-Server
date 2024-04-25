@@ -1,7 +1,0 @@
-# Files to ignore
-private/.env
-public/shared/config/bash_aliases.env
-
-
-# Folders to ignore
-secrets/
