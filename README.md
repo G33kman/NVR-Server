@@ -6,7 +6,7 @@
 ---
 
 <p>
-  <img src="/documentation/assets/images/hero/repo-hero-image.jpg" with="65%" height="auto">
+  <img src="/documentation/assets/images/hero/repo-hero-image.jpg" width=65% height=65%>
 </p>
 
 ---
