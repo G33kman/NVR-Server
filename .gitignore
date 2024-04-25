@@ -1,5 +1,5 @@
 # Ignore everything in the root directory
-src/
+!src/assets/
 
 # Except for the content of the example folder
 #!/
