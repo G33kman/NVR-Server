@@ -4,7 +4,7 @@ This file lists the different sections inside the documentation folder with defi
 <p align="center">
     <picture>
         <source media="(prefers-color-scheme: dark)" srcset="/documentation/assets/images/docs-hero-image.jpg">
-        <img src="/documentation/assets/images/docs-hero-image.jpg" width="100vw">
+        <img src="/documentation/assets/images/docs-hero-image.jpg" width="65%">
     </picture>
 </p>
 
