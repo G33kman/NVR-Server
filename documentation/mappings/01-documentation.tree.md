@@ -9,9 +9,9 @@
 
 > An image of a computer on a desk reading some documents.
 
-This file lists the different sections inside the documentation folder with definitions and examples as needed.
-
 ---
+
+This file lists the different sections inside the documentation folder with definitions and examples as needed.
 
 > [!TIP]
 > Header links can be clicked to visit the location for that section.

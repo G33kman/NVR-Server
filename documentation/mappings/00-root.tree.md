@@ -11,10 +11,10 @@
 
 This file lists the content that is located within the base directory for the Docker container setup for the Server.
 
+---
+
 > [!TIP]
 > Header links can be clicked to visit the location for that section.
-
----
 
 ## [Documentation](/documentation/)
 This folder contains documentation about the files that setup an Ubuntu (headless) Server[^1]
