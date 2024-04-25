@@ -1,4 +1,12 @@
 # Introduction
+
+<p align="center">
+    <picture>
+        <source media="(prefers-color-scheme: dark)" srcset="/documentation/assets/images/docs-hero-image.jpg">
+        <img src="/documentation/assets/images/root-hero-image.jpg" width="65%">
+    </picture>
+</p>
+
 This file lists the content that is located within the base directory for the Docker container setup for the Server.
 
 > [!TIP]
