@@ -2,12 +2,12 @@
 
 <p align="center">
     <picture>
-        <source media="(prefers-color-scheme: dark)" srcset="/documentation/assets/images/public-hero-image.jpg">
-        <img src="/documentation/assets/images/public-hero-image.jpg" width="65%">
+        <source media="(prefers-color-scheme: dark)" srcset="/documentation/assets/images/docs-hero-image.jpg">
+        <img src="/documentation/assets/images/docs-hero-image.jpg" width="65%">
     </picture>
 </p>
 
-> An image of a folder with a clipboard inside of it with a document clipped and documents around the folder with a pen to the left.
+> An image of a computer on a desk reading some documents.
 
 ---
 
