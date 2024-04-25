@@ -1,5 +1,0 @@
-# Ignore everything in the root directory
-src/
-example/
-# Except for the content of the example folder
-#!/
