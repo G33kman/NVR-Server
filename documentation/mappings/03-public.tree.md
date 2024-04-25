@@ -7,7 +7,7 @@
     </picture>
 </p>
 
-> An image of a computer on a desk reading some documents.
+> An image of a folder with a clipboard inside of it with a document clipped and documents around the folder with a pen to the left.
 
 ---
 
