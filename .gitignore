@@ -1,7 +1,6 @@
-# Files to ignore
-private/.env
-public/shared/config/bash_aliases.env
+# Exclude the src folder
+src/
 
-
-# Folders to ignore
-# secrets/
+# Include the content within the example folder
+# but not the example folder itself
+!example/*
