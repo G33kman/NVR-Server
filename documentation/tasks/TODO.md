@@ -11,4 +11,4 @@
 
 ---
 
-This file lists the different sections inside the documentation folder with definitions and examples as needed.
+This file lists the things that still need to be completed as well as previous to-do objectives that have been finished successfully.
