@@ -25,3 +25,7 @@ This list keeps track of things that need to be completed (or have already been 
 - [ ] #08 - [Server Configuration Documentation](https://github.com/G33kman/NVR-Server/issues/8)
 - [ ] #09 - [Docker Compose Files](https://github.com/G33kman/NVR-Server/issues/9)
 - [ ] #11 - [Repository README file](https://github.com/G33kman/NVR-Server/issues/11)
+- [ ] DNS CNAME Record for OAuth
+
+**Final Prep Tasks**
+- [ ] Run the adjust_permission.sh script to adjust the permissions in the private folder
