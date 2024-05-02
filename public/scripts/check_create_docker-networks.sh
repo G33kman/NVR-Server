@@ -1,156 +1,177 @@
 #!/bin/bash
 
-# Define a multi-dimensional array to store network information
-networks=(
-    [0]="internal 10.2.0.0/24 10.2.0.1 10.2.0.2/25"
-    [1]="backend 10.2.1.0/24 10.2.1.1 10.2.1.2/25"
-    [2]="frontend 10.2.2.0/24 10.2.2.1 10.2.2.2/25"
+###############################################
+# WARNING: NOT FINISHED                       #
+###############################################
+
+# =============================================
+# VARIABLE SECTION
+# =============================================
+#
+# Placeholder for the network name
+v_network_name_current=""
+#
+# Network option state (0: List, 1: Create or 2: Remove)
+v_network_option_state=0
+#
+# Placeholder for the network option text (Create or Remove)
+v_network_option_text=""
+#
+
+# =============================================
+# ARRAY SECTION
+# =============================================
+#
+# Define the network data as an array
+#
+declare -A a_networks=(
+  [0]="internal 10.2.0.0/24 10.2.0.1 10.2.0.2/25"
+  [1]="backend 10.2.1.0/24 10.2.1.1 10.2.1.2/25"
+  [2]="frontend 10.2.2.0/24 10.2.2.1 10.2.2.2/25"
 )
 
-# Function to retrieve Docker networks excluding default networks
-get_networks() {
-  docker network ls --format '{{.Name}}' | grep -v '^bridge$\|^docker_gwbridge$\|^host$\|^ingress$\|^none$'
+# =============================================
+# GENERAL FUNCTION SECTION
+# =============================================
+
+# When the exit option is selected
+f_option_exit() {
+    trap 'echo "Caught Ctrl+C or SIGTERM. Exiting..." && exit 1' INT TERM
 }
 
-# Function to display the list of networks with numbering to remove
-show_networks_create() {
-    echo "Which network would you like to create:"
-    local count=1
-    for network in "${networks[@]}"; do
-        echo "$count): $network"
-        (( count++ ))
-    done
-    echo "${count}): CREATE ALL NETWORKS"
-    echo "0): CANCEL SCRIPT"
+# When the cancel option is selected
+f_option_cancel() {
+    echo "Cancel option selected. Returning to the network options menu..."
+    f_menu_main
 }
 
-# Function to display the list of networks with numbering to create
-show_networks_remove() {
-    echo "Which network would you like to remove:"
-    get_networks
-    local count=1
-    for current_network in "${current_networks[@]}"; do
-        echo "$count): $current_network"
-        (( count++ ))
-    done
-    echo "${count}): REMOVE ALL NETWORKS"
-    echo "0): CANCEL SCRIPT"
+# Command to show the current Docker networks (minus the default networks)
+f_command_network_list() {
+    docker network ls --format '{{.Name}}' | grep -v '^bridge$\|^docker_gwbridge$\|^host$\|^ingress$\|^none$'
 }
 
-# Function to create or remove networks
-create_or_remove_networks() {
-    local choice
-    echo "Would you like to create a network or remove a network?"
-    echo "1) Create a Network"
-    echo "2) Remove a Network"
-    echo "3) List Networks"
-    echo "0) Cancel Script"
-    read -p "Please enter a number: " -r choice
+# Command to remove a docker network
+f_is_empty_string() {
 
-    if [[ $choice -eq 0 ]]; then
-        echo "Cancellation requested. Exiting."
-        return
-    elif [[ $choice -eq 1 ]]; then
-        clear
-        echo "--- Create network selected ---"
-        create_networks
-    elif [[ $choice -eq 2 ]]; then
-        echo "Remove network selected"
-        echo "====================="
-        show_networks_remove
-        echo "====================="
-        remove_networks
-    elif [[ $choice -eq 3 ]]; then
-        clear
-        echo "Existing Networks:"
-        echo "====================="
-        get_networks
-        echo "====================="
-        create_or_remove_networks
+    # Check if the network_name variable is empty
+    if [[ -n "$1" ]]; then
+        echo "Variable value is '$1'"
+        return 0
     else
-        echo "Invalid choice. Please enter a valid number."
-        create_or_remove_networks
+        echo "[ERROR]: Variable is empty."
+        return 1
     fi
+
 }
 
-# Function to remove a network
-remove_networks() {
-    local choice
-    read -p "Enter the number of the network to remove, or '0' to cancel: " choice
-    if [[ $choice -eq 0 ]]; then
-        echo "Cancellation requested. Exiting."
-        return
-    elif [[ $choice -eq $(( ${#current_networks[@]} + 1 )) ]]; then
-        echo "Removing all networks..."
-        for network in "${current_networks[@]}"; do
-            echo "Removing network: $network"
-            sudo docker network rm "$network"
-        done
-    elif [[ $choice -le ${#current_networks[@]} ]]; then
-        local selected_network="${current_networks[$(($choice - 1))]}"
-        echo "Removing network: $selected_network"
-        sudo docker network rm "$selected_network"
+# Sets the network option state text to Create or Remove. Otherwise sets it to empty ""
+f_set_network_option_text() {
+    local state=$v_network_option_state
+    local text=$v_network_option_text
+
+    # Checks how to set the network option text
+    if [[ $state -eq 1 ]]; then
+        $text="create"
+    elif [[ $state -eq 2 ]]; then
+        $text="remove"
     else
-        echo "Invalid choice. Please enter a valid number."
-        remove_networks
+        $text=""
     fi
+
+    # Sets the network option text string
+    $v_network_option_text=$text
 }
 
-# Function to prompt user for network creation
-create_networks() {
-    local choice
-    echo "Which network would you like to create:"
-    for index in "${!networks[@]}"; do
-        read -r network_name subnet gateway ip_range <<< "${networks[$index]}"
-        echo "$((index + 1)): $network_name"
-    done
-    echo "$(( ${#networks[@]} + 1 )): CREATE ALL NETWORKS"
-    echo "0: CANCEL SCRIPT"
-    read -p "Enter the number of the network to create, or '0' to cancel: " choice
+# Docker network list menu text
+f_list_docker_networks() {
+    echo "============================="
+    echo "Docker Network List"
+    echo "============================="
+    echo ""
+    echo "-----------------------------"
+    f_command_network_list
+    echo "-----------------------------"
+}
+
+# =============================================
+# MAIN MENU FUNCTION SECTION
+# =============================================
+
+# Main menu text to show
+f_menu_main_text() {
+    echo "============================="
+    echo "Docker Network Administration"
+    echo "============================="
+    echo ""
+    echo "1) List Current Docker Networks"
+    echo "2) Create Docker Networks"
+    echo "3) Remove Docker Networks"
+    echo "-----------------------------"
+    echo "0) Exit Script"
+}
+
+# Main menu prompt the user for a selection
+f_menu_main_prompt() {
+
+    # Resets the network state
+    if [[ $v_network_option_state -ne 0 ]]; then
+        $v_network_name_current=0
+    fi
+
+    # Prompt the user to make a selection from the menu
+    read -p "Please make a selection: " -r choice
+
+    # Route the user to a menu depending on their choice
     case $choice in
         0)
-            echo "Cancellation requested. Exiting."
-            return
+            # Exit the Script
+            f_option_exit
             ;;
-        [1-$(( ${#networks[@]}))])
-            read -r network_name subnet gateway ip_range <<< "${networks[$(($choice - 1))]}"
-            create_network "$network_name" "$subnet" "$gateway" "$ip_range"
+        1)
+            # List Docker Networks Menu
+            f_list_docker_networks
             ;;
-        all)
-            for i in "${!networks[@]}"; do
-                create_network "${networks[$i]}"
-            done
+        2)
+            # Create Docker Networks Menu
+            $v_network_option_state=1
+            ;;
+        3)
+            # Remove Docker Networks Menu
+            $v_network_option_state=2
             ;;
         *)
-            echo "Invalid choice. Please enter a valid number."
-            create_networks
+            # Incorrect response
+            $v_network_option_state=0
+            echo "[WARN]: Incorrect response. Please enter a number."
+            f_menu_main
             ;;
     esac
+
 }
 
-# Function to create all networks
-create_all_networks() {
-    for network_info in "${networks[@]}"; do
-        read -r network_name subnet gateway ip_range <<< "$network_info"
-        create_network "$network_name" "$subnet" "$gateway" "$ip_range"
-    done
+f_menu_main() {
+    f_menu_main_text
+    f_menu_main_prompt
 }
 
-# Function to create a docker network
-create_network() {
-    local network_name=$1
-    local subnet=$2
-    local gateway=$3
-    local ip_range=$4
-    echo "Creating network: $network_name"
-    sudo docker network create --subnet=$subnet --gateway=$gateway --ip-range=$ip_range $network_name
+# =============================================
+# NETWORK FUNCTION SECTION
+# =============================================
+
+f_menu_network_text() {
+    
+    # Sets the network option text (create or remove)
+    f_set_network_option_text
+
+    # Creates the text to show for the network menu
+    echo "=========================================="
+    echo "Docker $v_network_option_text Network Menu"
+    echo "=========================================="
+    echo ""
+    echo ""
+    echo ""
 }
 
-#=====================
-# Main Script
-#=====================
-
-# Retrieve networks
-current_networks=($(get_networks))
-
-create_or_remove_networks
+# === Script Start === #
+clear
+f_menu_main
