@@ -1,22 +1,16 @@
 # Docker Bench for Security
 The Docker Bench for Security is a script that checks for dozens of common best-practices around deploying Docker containers in production.
 
-<div align="right">
 > [!NOTE]
 > The tests are all automated, and are based on the CIS Docker Benchmark v1.6.0.
-</div>
 
 ---
 <div align="center">
   <img src="/documentation/assets/images/gui/bench-security/UI-log.png" alt="Bench-Security Log output example image" width="auto" height="80%">
 </div>
 
-<div align="right">
-
 > [!NOTE]
 > (GitHub Repository Link)[https://github.com/docker/docker-bench-security]
-
-</div>
 
 ---
 ## RUNNING DOCKER BENCH FOR SECUIRTY
@@ -31,10 +25,8 @@ cd docker-bench-security
 sudo sh docker-bench-security.sh
 ```
 
-<div align="right">
 > [!NOTE]
 > [`jq`](https://jqlang.github.io/jq/) is an optional but recommended dependency
-</div>
 
 ### Run with Docker
 You have two options if you wish to build and run this container yourself:
@@ -83,16 +75,12 @@ docker run --rm --net host --pid host --userns host --cap-add audit-control \
 docker-bench-security
 ```
 
-<div align="right">
 > [!NOTE]
 > Don't forget to adjust the shared volumes according to the operating system.
-</div>
 
 ---
-<div align="right">
 > [!IMPORTANT]
 > On Ubuntu the `docker.service` and `docker.secret` (if applicable) files are located in `/lib/sysstemd/system` folder by default
-</div>
 
 ```sh
 docker run -rm --net host --pid host --userns host --cap-add audit_control \
@@ -108,10 +96,8 @@ docker run -rm --net host --pid host --userns host --cap-add audit_control \
 docker-bench-security
 ```
 
-<div align="right">
 > [!NOTE]
 > When the distribution doesn't contain `auditctl`, the audit test will check `/etc/audit/audit.rules` to see if a rule is present instead.
-</div>
 
 ### Docker Bench for Security Options
 Option | Requirement | Description | Example |
