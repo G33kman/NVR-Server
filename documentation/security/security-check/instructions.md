@@ -6,7 +6,7 @@ The Docker Bench for Security is a script that checks for dozens of common best-
 
 ---
 <div align="center">
-  <img src="/documentation/assets/images/gui/bench-security/UI-log.png" alt="Bench-Security Log output example image" width="auto" height="80%">
+  <img src="https://github.com/G33kman/NVR-Server/blob/5c2b053af81a694d5bcb725a1ce87c92a6d4ff84/documentation/assets/images/gui/bench-security/UI-log.png" alt="Bench-Security Log output example image" width="auto" height="80%">
 </div>
 
 > [!NOTE]
