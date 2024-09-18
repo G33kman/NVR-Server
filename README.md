@@ -1,5 +1,9 @@
 # NVR-System
 
+<p>
+  <img alt="Readme Hero Image" title="NVR Server Readme File Hero Image" width="1536" height="1536" style="margin: 0 auto" src="assets/repo-hero-image.jpg">
+</p>
+
 ## Project Description:
 > The NVR-System is a comprehensive video surveillance solution built on a containerized architecture. It leverages AI-powered object detection, robust security practices, and user-friendly management tools. This system provides high-definition video recording, real-time analysis, and secure remote access for effective surveillance and monitoring.
 
