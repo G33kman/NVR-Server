@@ -1,7 +1,7 @@
 # NVR-System
 
 <p>
-  <img alt="Readme Hero Image" title="NVR Server Readme File Hero Image" width="1536" height="1536" style="margin: 0 auto" src="assets/repo-hero-image.jpg">
+  <img alt="Readme Hero Image" title="NVR Server Readme File Hero Image" width="50em" height="50em" style="margin: 0 auto" src="assets/repo-hero-image.jpg">
 </p>
 
 ## Project Description:
