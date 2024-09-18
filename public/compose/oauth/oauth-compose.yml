@@ -1,0 +1,33 @@
+services:
+  oauth: # Google OAuth - Single Sign On using OAuth 2.0
+    container_name: oauth
+    image: ${REPO}/${NAME}:${TAG}
+    env_file:
+      - ${DIR_ROOT}/.env
+      - oauth.env
+    volumes:
+      - "${SYS_TIME}"
+    security_opt:
+      - ${NO_NEW_PRIVILEGES}
+    privileged: false
+    restart: ${RESTART_NORMAL}
+    depends_on:
+      - socket
+    networks:
+      internal:
+        ipv4_address: ${IP_INTERNAL_OAUTH}
+    secrets:
+      - source: oauth_secrets
+        target: ${CONFIG}
+    labels:
+      ## Custom Labels
+      - "${LABEL_DOMAIN}=oauth"
+      ## Traefik
+      - "traefik.enable=true"
+      - "${TR_RTR}.tls=true"
+      - "${TR_RTR}.entrypoints=websecure"
+      - "${TR_RTR}.rule=Host(`oauth.${DOMAIN_NAME}`)"
+      - "${TR_RTR}.middlewares=chain-oauth@file"
+      # - "${TR_RTR}.middlewares=chain-no-auth@file"
+      - "${TR_RTR}.service=oauth-svc"
+      - "${TR_SVC}.loadbalancer.server.port=${PORT_OAUTH_HTTP}"

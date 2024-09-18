@@ -1,0 +1,47 @@
+services:
+  crowdsec: # Open-source & collaborative security IPS
+    container_name: crowdsec
+    image: ${REPO}/${NAME}:${TAG}
+    env_file:
+      - ${DIR_ROOT}/.env
+      - crowdsec.env
+    volumes:
+      - "${SYS_TIME}"
+      - "${DIR_VAR_LOG}:${DIR_VAR_LOG}:ro"
+      - "${DIR_LOGS}/crowdserver:${DIR_CONT_LOGS}:ro"
+      - "${DIR_DATA}/crowdsec/data:${DIR_CONT_DATA}"
+      - "${DIR_DATA}/crowdsec/config:${DIR_CONT_CONFIG}"
+    security_opt:
+      - ${NO_NEW_PRIVILEGES}
+    privileged: false
+    restart: ${RESTART_NORMAL}
+    # networks:
+      # nvr-server_private
+      #   ipv4_address: ${IP_PRIVATE_CROWDSEC}
+      # nvr-server_public
+      #   ipv4_address: ${IP_PUBLIC_CROWDSEC}
+    ports:
+      - name: web
+        host_ip: ${LOCAL_HOST}
+        target: ${PORT_TRAEFIK_HTTP}
+        published: ${PORT_TRAEFIK_HTTP}
+        protocol: tcp
+        mode: host
+      - name: zero-tier
+        host_ip: ${ZEROTIER_IP_CLOUDSERVER}
+        target: ${PORT_TRAEFIK_METRICS}
+        published: ${PORT_TRAEFIK_METRICS}
+        protocol: tcp
+        mode: host
+    environment:
+      COLLECTIONS: "${COLLECTION_TRAEFIK} ${COLLECTION_CVE} ${COLLECTION_WHITELIST} ${COLLECTION_IP_TABLES} ${COLLECTION_LINUX} ${COLLECTION_PROXMOX}"
+    labels:
+      ## Custom Labels
+      - "${LABEL_DOMAIN}=crowdsec"
+      ## Traefik
+      - "traefik.enable=true"
+      - "${TR_RTR}.entrypoints=websecure"
+      - "${TR_RTR}.rule=Host(`crowdsec.${DOMAIN_NAME}`)"
+      - "${TR_RTR}.middlewares=chain-oauth@file"
+      - "${TR_RTR}.service=crowdsec-svc"
+      - "${TR_SVC}.loadbalancer.server.port=${PORT_CROWDSEC_HTTP}"

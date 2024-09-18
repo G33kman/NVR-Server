@@ -1,0 +1,31 @@
+{
+  "dns-cloudflare": {
+    "Account": {
+      "Email": "user@example.com",
+      "Registration": {
+        "body": {
+          "status": "valid",
+          "contact": [
+            "mailto:user@example.com"
+          ]
+        },
+        "uri": "https://acme-v02.api.letsencrypt.org/acme/acct/accountnumberhere"
+      },
+      "PrivateKey": "randomcharacterprivatekeyhere",
+      "KeyType": "4096"
+    },
+    "Certificates": [
+      {
+        "domain": {
+          "main": "domain.url.here",
+          "sans": [
+            "*.domain.url.here"
+          ]
+        },
+        "certificate": "certificatecodehere",
+        "key": "certificatekeyhere",
+        "Store": "default"
+      }
+    ]
+  }
+}

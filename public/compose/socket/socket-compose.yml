@@ -1,0 +1,38 @@
+services:
+  socket: # Docker Socket-Proxy, image from linuxserver.io
+    container_name: socket
+    image: ${REPO}/${NAME}:${TAG}
+    env_file:
+      - ${DIR_ROOT}/.env
+      - socket.env
+    volumes:
+      - "${VOL_DOCKER_SOCKET}"
+      - "${SYS_TIME}"
+      - type: tmpfs
+        target: /run
+        tmpfs:
+          size: 100m
+          mode: 0700
+    security_opt:
+      - ${NO_NEW_PRIVILEGES}
+    privileged: true
+    restart: ${RESTART_IMPORTANT}
+    read_only: false
+    networks:
+      internal:
+        ipv4_address: ${IP_INTERNAL_SOCKET}
+    ports:
+      - ${PORT_SOCKET_PROXY}:${PORT_SOCKET_PROXY}
+    logging:
+      driver: json-file
+      options:
+        max-size: 10m
+    healthcheck:
+      test: ["CMD", "nc", "-z", "localhost", "${PORT_SOCKET_PROXY}"]
+      interval: 30s
+      timeout: 15s
+      retries: 3
+      start_period: 10s
+    labels:
+      ## Custom Labels
+      - "${LABEL_DOMAIN}=socket"

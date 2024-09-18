@@ -1,0 +1,74 @@
+### Project Name
+name: nvr-server
+
+### Docker Networks
+networks:
+  internal:
+    name: internal
+    driver: bridge
+    ipam:
+      config:
+        - subnet: ${IP_INTERNAL_BASE}0/27
+  private:
+    name: private
+    driver: bridge
+    ipam:
+      config:
+        - subnet: ${IP_PRIVATE_BASE}0/27
+  public:
+    name: public
+    driver: bridge
+    ipam:
+      config:
+        - subnet: ${IP_PUBLIC_BASE}0/27
+
+### Docker Secrets
+secrets:
+  ## Administrator Password
+  admin_username_secret:
+    file: ${DIR_SECRETS}/admin/admin_username.secret
+  ## Administrator Password
+  admin_password_secret:
+    file: ${DIR_SECRETS}/admin/admin_password.secret
+  ## Basic Authentication
+  basic_auth_credentials:
+    file: ${DIR_SECRETS}/traefik/basic_auth_credentials
+  ## Cloudflare Email
+  cf_api_email:
+    file: ${DIR_SECRETS}/traefik/cf_api_email.secret
+  ## Cloudflare DNS API Token
+  cf_dns_api_token:
+    file: ${DIR_SECRETS}/traefik/cf_dns_api_token
+  ## Google oAuth
+  oauth_secrets:
+    file: ${DIR_SECRETS}/oauth/oauth_secrets
+  ## Portainer API Secret Key
+  # portainer_api_key:
+  #   file: ${DIR_SECRETS}/homepage/homepage_portainer_api_key
+
+### Docker Container Includes
+include:
+  ## Docker Socket-Proxy
+  - path: ${DIR_COMPOSE}/socket/socket-compose.yml
+    env_file:
+      - ${DIR_COMPOSE}/socket/socket.env
+  ## Google Authentication
+   path: ${DIR_COMPOSE}/oauth/oauth-compose.yml
+   env_file:
+     - ${DIR_COMPOSE}/oauth/oauth.env
+  ## Traefik
+  - path: ${DIR_COMPOSE}/traefik/traefik-compose.yml
+    env_file:
+      - ${DIR_COMPOSE}/traefik/traefik.env
+  ## Portainer
+  - path: ${DIR_COMPOSE}/portainer/portainer-compose.yml
+    env_file:
+      - ${DIR_COMPOSE}/portainer/portainer.env
+  ## Homepage
+  - path: ${DIR_COMPOSE}/homepage/homepage-compose.yml
+    env_file:
+      - ${DIR_COMPOSE}/homepage/homepage.env
+  ## Dozzle
+  - path: ${DIR_COMPOSE}/dozzle/dozzle-compose.yml
+    env_file:
+      - ${DIR_COMPOSE}/dozzle/dozzle.env

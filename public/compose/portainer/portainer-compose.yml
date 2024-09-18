@@ -1,0 +1,36 @@
+services:
+  portainer: # Docker Container Management
+    container_name: portainer
+    image: ${REPO}/${NAME}:${TAG}
+    env_file:
+      - ${DIR_ROOT}/.env
+      - portainer.env
+    volumes:
+      - "${SYS_TIME}"
+      - "${DIR_DATA}/portainer/config:${DIR_CONFIG}"
+    security_opt:
+      - ${NO_NEW_PRIVILEGES}
+    privileged: false
+    restart: ${RESTART_NORMAL}
+    depends_on:
+      - traefik
+    command: -H ${DOCKER_HOST}
+    networks:
+      internal:
+        ipv4_address: ${IP_INTERNAL_PORTAINER}
+      public:
+        ipv4_address: ${IP_PUBLIC_PORTAINER}
+    secrets:
+      - admin_username_secret
+      - admin_password_secret
+    labels:
+      ## Custom Labels
+      - "${LABEL_DOMAIN}=portainer"
+      ## Traefik
+      - "traefik.enable=true"
+      - "${TR_RTR}.entrypoints=websecure"
+      - "${TR_RTR}.rule=Host(`portainer.${DOMAIN_NAME}`)"
+      - "${TR_RTR}.middlewares=chain-oauth@file"
+      # - "${TR_RTR}.middlewares=chain-no-auth@file"
+      - "${TR_RTR}.service=portainer-svc"
+      - "${TR_SVC}.loadbalancer.server.port=${PORT_PORTAINER_HTTP}"

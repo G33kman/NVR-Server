@@ -1,0 +1,30 @@
+services:
+  homepage: # Docker Container App Dashboard Homepage
+    container_name: homepage
+    image: ${REPO}/${NAME}:${TAG}
+    env_file:
+      - ${DIR_ROOT}/.env
+      - homepage.env
+    volumes:
+      - "${SYS_TIME}"
+      - "${DIR_DATA}/homepage/config:${DIR_CONFIG}"
+    security_opt:
+      - ${NO_NEW_PRIVILEGES}
+    privileged: false
+    restart: ${RESTART_NORMAL}
+    networks:
+      internal:
+        ipv4_address: ${IP_INTERNAL_HOMEPAGE}
+      public:
+        ipv4_address: ${IP_PUBLIC_HOMEPAGE}
+    labels:
+      ## Custom Labels
+      - "${LABEL_DOMAIN}=homepage"
+      ## Traefik
+      - "traefik.enable=true"
+      - "${TR_RTR}.entrypoints=websecure"
+      - "${TR_RTR}.rule=Host(`${DOMAIN_NAME}`) || Host(`www.${DOMAIN_NAME}`)"
+      # - "${TR_RTR}.middlewares=chain-no-auth@file"
+      - "${TR_RTR}.middlewares=chain-oauth@file"
+      - "${TR_RTR}.service=homepage-svc"
+      - "${TR_SVC}.loadbalancer.server.port=${PORT_HOMEPAGE_HTTP}"

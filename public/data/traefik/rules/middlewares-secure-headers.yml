@@ -1,0 +1,27 @@
+http:
+  middlewares:
+    middlewares-secure-headers:
+      headers:
+        accessControlAllowMethods:
+          - GET
+          - OPTIONS
+          - PUT
+        accessControlMaxAge: 3600 # 1 Hour
+        hostsProxyHeaders:
+          - "X-Forwarded-Host"
+        stsSeconds: 31536000 # 63072000 1 year instead of 2
+        stsIncludeSubdomains: true
+        stsPreload: true
+        # forceSTSHeader: true # This is a good thing but it can be tricky. Enable after everything works.
+        customFrameOptionsValue: SAMEORIGIN # https://developer.mozilla.org/en-US/docs/Web/HTTP/Headers/X-Frame-Options
+        contentTypeNosniff: true
+        browserXssFilter: true
+        referrerPolicy: "no-referrer" # "same-origin"
+        permissionsPolicy: "camera=(), microphone=(), geolocation=(), payment=(), usb=(), vr=()"
+        customResponseHeaders:
+          X-Robots-Tag: "none,noarchive,nosnippet,notranslate,noimageindex," # disable search engines from indexing server
+          server: "" # hide server info from visitors
+          X-Content-Type-Options: nosniff # Maybe
+          X-XSS-Protection: 1; mode=block # Maybe
+          X-Frame-Options: DENY # Maybe, 'Clickjacking'
+          Content-Security-Policy: "default-src 'self'; style-src 'self' https://fonts.googleapis.com; img-src 'self' https://domain.here"

@@ -1,0 +1,80 @@
+services:
+  traefik: # Reverse Proxy to route traffic to Docker containers
+    container_name: traefik
+    image: ${NAME}:${TAG}
+    env_file:
+      - ${DIR_ROOT}/.env
+      - traefik.env
+    volumes:
+      # - "${VOL_DOCKER_SOCKET}"
+      - "${SYS_TIME}"
+      - "${DIR_DATA}/traefik/rules:${DIR_TRAEFIK}/rules"
+      - "${SSL_CERT}:${DIR_TRAEFIK}/certs/acme.json"
+      - "${DIR_LOGS}/traefik:${DIR_TRAEFIK}/logs"
+    security_opt:
+      - ${NO_NEW_PRIVILEGES}
+    privileged: false
+    restart: ${RESTART_NORMAL}
+    depends_on:
+      - socket
+    networks:
+      internal:
+        ipv4_address: ${IP_INTERNAL_TRAEFIK}
+      public:
+        ipv4_address: ${IP_PUBLIC_TRAEFIK}
+    ports:
+      - ${PORT_TRAEFIK_HTTP}:${PORT_TRAEFIK_HTTP}
+      - ${PORT_TRAEFIK_HTTPS}:${PORT_TRAEFIK_HTTPS}
+      - ${PORT_TRAEFIK_DASH}:${PORT_TRAEFIK_DASH}
+      - ${PORT_TRAEFIK_PING}:${PORT_TRAEFIK_PING}
+    secrets:
+      - cf_api_email
+      - basic_auth_credentials
+      - cf_dns_api_token
+    labels:
+      ## Custom Labels
+      - "${LABEL_DOMAIN}=traefik"
+      - traefik.enable=true
+      - "${TR_RTR}.entrypoints=websecure"
+      - "${TR_RTR}.rule=Host(`traefik.${DOMAIN_NAME}`)"
+      - "${TR_RTR}.service=api@internal"
+      # - "${TR_RTR}.middlewares=chain-no-auth@file"
+      - "${TR_RTR}.middlewares=chain-oauth@file"
+    command:
+      - --global.checkNewVersion=true
+      - --global.sendAnonymousUsage=true
+      - --entrypoints.web.address=:${PORT_TRAEFIK_HTTP}
+      - --entrypoints.websecure.address=:${PORT_TRAEFIK_HTTPS}
+      - --entrypoints.traefik.address=:${PORT_TRAEFIK_DASH}
+      - --entrypoints.ping.address=:${PORT_TRAEFIK_PING}
+      - --${TR_EP_WEB}.to=websecure
+      - --${TR_EP_WEB}.scheme=https
+      - --${TR_EP_WEB}.permanent=true
+      - --api=true
+      - --api.dashboard=true
+      - --api.insecure=false
+      - --ping=true
+      - --ping.entryPoint=ping
+      # - --serversTransport.insecureSkipVerify=false
+      - --entrypoints.websecure.forwardedHeaders.trustedIPs=${CF_IPS},${LOCAL_IPS}
+      - --log=true
+      - --log.filePath=${DIR_TRAEFIK}/logs/traefik.log
+      - --log.level=${LOG_LEVEL}
+      - --log.format=${LOG_FORMAT}
+      - --log.maxage=${LOG_MAX_AGE}
+      - --accessLog=true
+      - --accessLog.filePath=${DIR_TRAEFIK}/logs/access.log
+      - --accesslog.format=${LOG_FORMAT}
+      - --accessLog.bufferingSize=${LOG_BUFFER}
+      - --accessLog.filters.statusCodes=${STATUS_CODES}
+      - --providers.docker=true
+      - --providers.docker.endpoint=${DOCKER_HOST}
+      - --providers.docker.exposedByDefault=false
+      - --providers.docker.network=${NET_INTERNAL}
+      - --providers.file.directory=${DIR_TRAEFIK}/rules
+      - --providers.file.watch=true
+      # - --${TR_CR_DNS}.caServer=https://acme-staging-v02.api.letsencrypt.org/directory
+      - --${TR_CR_DNS}.email=${CF_API_EMAIL_FILE}
+      - --${TR_CR_DNS}.storage=${DIR_TRAEFIK}/certs/acme.json
+      - --${TR_CR_DNS}.dnsChallenge.provider=cloudflare
+      - --${TR_CR_DNS}.dnsChallenge.resolvers=${DNS_CHALLENGE_1},${DNS_CHALLENGE_2}

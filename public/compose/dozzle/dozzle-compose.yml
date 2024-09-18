@@ -1,0 +1,41 @@
+services:
+  dozzle: # Real-time Docker Log Viewer
+    container_name: dozzle
+    image: ${REPO}/${NAME}:${TAG}
+    env_file:
+      - ${DIR_ROOT}/.env
+      - dozzle.env
+    volumes:
+      - "${SYS_TIME}"
+    security_opt:
+      - ${NO_NEW_PRIVILEGES}
+    privileged: false
+    restart: ${RESTART_NORMAL}
+    depends_on:
+      - traefik
+    networks:
+      internal:
+        ipv4_address: ${IP_INTERNAL_DOZZLE}
+      public:
+        ipv4_address: ${IP_PUBLIC_DOZZLE}
+    logging:
+      driver: json-file
+      options:
+        max-size: 10m
+    healthcheck:
+      test: ["CMD", "/dozzle", "healthcheck"]
+      interval: 30s
+      timeout: 15s
+      retries: 3
+      start_period: 10s
+    labels:
+      ## Custom Labels
+      - "${LABEL_DOMAIN}=dozzle"
+      ## Traefik
+      - "traefik.enable=true"
+      - "${TR_RTR}.entrypoints=websecure"
+      - "${TR_RTR}.rule=Host(`dozzle.${DOMAIN_NAME}`)"
+      - "${TR_RTR}.middlewares=chain-oauth@file"
+      # - "${TR_RTR}.middlewares=chain-no-auth@file"
+      - "${TR_RTR}.service=dozzle-svc"
+      - "${TR_SVC}.loadbalancer.server.port=${PORT_DOZZLE_HTTP}"
