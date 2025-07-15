@@ -84,13 +84,11 @@ This NVR server stack includes a variety of applications, each serving a specifi
 | App Name         | Container Name | Version Tag            | Notes                                   |
 | :--------------- | :------------- | :--------------------- | :-------------------------------------- |
 | Authelia         | authelia       | 4.39.4                 | Authentication System                   |
-| Beszel           | beszel         | 0.11.1                 | Metrics Visualization                   |
-| Beszel Agent     | beszel-agent   | 0.11.1                 | Metrics Scraper                         |
 | Compreface       | compreface     | 1.2.0-arcface-r100-gpu | Face Recognition Service                |
-| Double-Take      | dt             | sha-0227b0c            | Face Detection Service                  |
-| Frigate NVR      | frigate        | 0.15.1                 | A.I. NVR System                         |
+| Double-Take      | dt             | 1.13.1                 | Face Detection Service                  |
+| Frigate NVR      | frigate        | 0.16.0-beta4-tensorrt  | A.I. NVR System                         |
 | Gotify           | gotify         | 2.6.3                  | Notification System                     |
-| Home Assistant   | hass           | 2025.6.2               | Automation Platform                     |
+| Home Assistant   | hass           | 2025.7.1               | Automation Platform                     |
 | Uptime-Kuma      | kuma           | 2.0.0-beta.3           | Container Uptime Monitoring             |
 | MQTT Broker      | mqtt           | 2.0.21                 | Device Messaging System                 |
 | pgAdmin          | pgadmin        | 9.4.0                  | Database Web UI                         |
