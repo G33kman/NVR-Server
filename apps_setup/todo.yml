@@ -1,0 +1,35 @@
+############
+# Things to do after everything is configured and running correctly
+# Status List: 'pending', 'paused', 'complete', 'needs-update'
+############
+
+todo:
+  priority-high:
+
+    - task: "<TASK_NAME_HERE>"
+      details: "<DETAILS_HERE>"
+      status: "<STATUS>"
+
+  priority-medium:
+
+    - task: "<TASK_NAME_HERE>"
+      details: "<DETAILS_HERE>"
+      status: "<STATUS>"
+
+    - task: "<TASK_NAME_HERE>"
+      details: "<DETAILS_HERE>"
+      status: "<STATUS>"
+
+  priority-low:
+
+    - task: "<TASK_NAME_HERE>"
+      details: "<DETAILS_HERE>"
+      status: "<STATUS>"
+
+    - task: "<TASK_NAME_HERE>"
+      details: "<DETAILS_HERE>"
+      status: "<STATUS>"
+
+    - task: "<TASK_NAME_HERE>"
+      details: "<DETAILS_HERE>"
+      status: "<STATUS>"

@@ -1,0 +1,70 @@
+services:
+  hass: # Open source smart automation that puts local control and privacy first.
+    container_name: ${APP_NAME}
+    image: "${REPO}/${NAME}:${TAG}"
+    env_file:
+      - ${DIR_ROOT}/.env
+      - ${APP_NAME}.env
+    volumes:
+      - "${SYS_TIME}"
+      # - "${APP_NAME}_data:${DIR_INT_CONFIG}" # Volume mount (production)
+      - "${DIR_CONFIG}/includes:${DIR_INT_CONFIG}/includes" # Bind mount (development)
+      - "${DIR_CONFIG}/configuration.yaml:${DIR_INT_CONFIG}/configuration.yaml" # Bind mount (development)
+      - "${DIR_CONFIG}/ip_bans.yaml:${DIR_INT_CONFIG}/ip_bans.yaml" # Bind mount (development)
+      - "${DIR_CONFIG}/secrets.yaml:${DIR_INT_CONFIG}/secrets.yaml" # Bind mount (development)
+      - "${VOL_VIDEOS_CURRENT}:${VOL_VIDEOS_CURRENT}"
+      - "${VOL_VIDEOS_ARCHIVES}:${VOL_VIDEOS_ARCHIVES}"
+    security_opt:
+      - ${PRIVILEGES_DEFAULT}
+    privileged: false
+    restart: ${RESTART_NORMAL}
+    depends_on:
+      mqtt:
+        condition: service_healthy
+    deploy:
+      resources:
+        limits:
+          cpus: '${CPU_LIMIT}'
+          memory: '${RAM_LIMIT}'
+        reservations:
+          cpus: '${CPU_RESERVE}'
+          memory: '${RAM_RESERVE}'
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8123"]
+      interval: ${HC_INTERVAL}
+      timeout: ${HC_TIMEOUT}
+      retries: ${HC_RETRIES}
+      start_period: ${HC_START_PERIOD}
+      start_interval: ${HC_START_INTERVAL}
+    hostname: ${APP_NAME}
+    # user: "${PUID}:${PGID}" # DO NOT USE
+    networks:
+      private:
+        ipv4_address: ${IP_PRIVATE}
+      public:
+        ipv4_address: ${IP_PUBLIC}
+    ports:
+      - "${PORT_HTTP}:${PORT_HTTP}"
+    labels:
+      ## Custom Labels
+      - "${LABEL_DOMAIN}=${APP_NAME}"
+      ## Traefik Labels
+      # Web Page Access
+      - "traefik.enable=true"
+      - "${TR_RTR}.entrypoints=websecure"
+      - "${TR_RTR}.rule=Host(`${APP_NAME}.${DOMAIN_NAME}`) || Host(`www.${APP_NAME}.${DOMAIN_NAME}`)"
+      - "${TR_RTR}.middlewares=chain-authelia@file"
+      - "${TR_SVC}.loadbalancer.server.port=${PORT_HTTP}"
+      # Mobile App Access
+      - "${TR_RTR_APP}.entrypoints=websecure"
+      - "${TR_RTR_APP}.tls.certresolver=dns-cf"
+      - "${TR_RTR_APP}.rule=Host(`m.${APP_NAME}.${DOMAIN_NAME}`) || Host(`www.m.${APP_NAME}.${DOMAIN_NAME}`)"
+      - "${TR_RTR_APP}.middlewares=chain-${APP_NAME}-bypass@file"
+      ## Portainer Access
+      - "io.portainer.accesscontrol.teams=API-Team"
+      ## Kuma Internal Monitor Route
+      - "${TR_RTR_KUMA}.rule=Host(`${APP_NAME}.example.com`) && PathPrefix(`/`)"
+      - "${TR_RTR_KUMA}.entrypoints=websecure"
+      - "${TR_RTR_KUMA}.priority=20"
+      - "${TR_RTR_KUMA}.service=${APP_NAME}-svc"
+      - "${TR_RTR_KUMA}.middlewares=middlewares-internal-only@file,chain-no-auth@file"

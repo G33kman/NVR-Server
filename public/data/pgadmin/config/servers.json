@@ -1,0 +1,49 @@
+{
+  "Servers": {
+    "1": {
+      "Name": "PostgreSQL Server",
+      "Group": "Servers",
+      "Host": "postgresql",
+      "Port": 5432,
+      "MaintenanceDB": "postgres",
+      "Username": "postgres",
+      "SSLMode": "prefer"
+    },
+    "2": {
+      "Name": "Authelia DB",
+      "Group": "Containers",
+      "Host": "postgresql",
+      "Port": 5432,
+      "MaintenanceDB": "authelia_db",
+      "Username": "postgres",
+      "SSLMode": "prefer"
+    },
+    "3": {
+      "Name": "Frigate DB",
+      "Group": "Containers",
+      "Host": "postgresql",
+      "Port": 5432,
+      "MaintenanceDB": "frigate_db",
+      "Username": "postgres",
+      "SSLMode": "prefer"
+    },
+    "4": {
+      "Name": "Grafana DB",
+      "Group": "Containers",
+      "Host": "postgresql",
+      "Port": 5432,
+      "MaintenanceDB": "grafana_db",
+      "Username": "postgres",
+      "SSLMode": "prefer"
+    },
+    "5": {
+      "Name": "Hass DB",
+      "Group": "Containers",
+      "Host": "postgresql",
+      "Port": 5432,
+      "MaintenanceDB": "hass_db",
+      "Username": "postgres",
+      "SSLMode": "prefer"
+    }
+  }
+}

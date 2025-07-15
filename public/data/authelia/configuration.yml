@@ -1,0 +1,251 @@
+theme: 'dark'
+server:
+  address: 'tcp://0.0.0.0:9091/'
+  buffers:
+    read: 4096
+    write: 4096
+  timeouts:
+    read: '6 seconds'
+    write: '6 seconds'
+    idle: '120 seconds'
+  endpoints:
+    enable_pprof: false
+    enable_expvars: false
+    authz:
+      forward-auth:
+        implementation: 'ForwardAuth'
+  disable_healthcheck: false
+  tls:
+    key: ""
+    certificate: ""
+log:
+  level: 'warn'
+  format: 'json'
+  file_path: '/config/authelia.log'
+  keep_stdout: true
+telemetry:
+  metrics:
+    enabled: true
+    address: 'tcp://:9959/metrics'
+    buffers:
+      read: 4096
+      write: 4096
+    timeouts:
+      read: '6 seconds'
+      write: '6 seconds'
+      idle: '30 seconds'
+totp:
+  issuer: 'example.com'
+  period: 30
+  skew: 1
+authentication_backend:
+  file:
+    path: '/config/users.yml'
+    password:
+      algorithm: 'argon2id'
+      iterations: 1
+      salt_length: 16
+      parallelism: 8
+      memory: 256 # blocks this much of the RAM
+  password_reset:
+    disable: true
+  refresh_interval: '5 minutes'
+password_policy:
+  standard:
+    enabled: false
+    min_length: 8
+    max_length: 16
+    require_uppercase: true
+    require_lowercase: true
+    require_number: true
+    require_special: true
+  zxcvbn:
+    enabled: false
+    min_score: 3
+definitions: # File specific variables
+  network:
+    local:
+      - "192.168.1.0/24"
+    private:
+      - "10.2.0.0/16"
+
+# Access Control Section
+access_control:
+  default_policy: deny
+  rules:
+    ##############################################
+    # 🔓 Internal/Bypass-Only Access
+    ##############################################
+    - domain: 'authelia.example.com'
+      policy: bypass
+
+    # Uptime-Kuma
+    - domain: 'kuma.example.com'
+      domain_regex: '^kuma\.example.com$'
+      methods: ['GET']
+      resources:
+        - '^/api/status-page/kuma-status$'
+        - '^/api/status-page/heartbeat/kuma-status$'
+      policy: bypass
+
+    # Vaultwarden
+    - domain: 'vault.example.com'
+      domain_regex: '^vault\.example.com'
+      policy: bypass
+
+    ##############################################
+    # 🔓 API Bypass Rules (Public APIs)
+    ##############################################
+    - domain: '*.example.com'
+      resources:
+        - '^/api/.*$'
+        - '^/graphql$'
+        - '^/prometheus/.*$'
+      policy: bypass
+
+    # Gotify Public API
+    - domain: 'gotify.example.com'
+      networks:
+        - '10.2.1.0/24'
+      methods: ['GET', 'POST', 'OPTIONS']
+      resources:
+        - '^/api([/?].*)?$'
+        - '^/client.*$'
+        - '^/message.*$'
+        - '^/application.*$'
+        - '^/current/user.*$'
+        - '^/user.*$'
+        - '^/plugin.*$'
+        - '^/version$'
+        - '^/health$'
+      policy: bypass
+
+    ##############################################
+    # 🔐 One-Factor and Two-Factor Access Rules
+    ##############################################
+    # Traefik Dashboard (read-only)
+    - domain: 'traefik.example.com'
+      domain_regex: '^traefik\.example.com$'
+      methods: ['GET']
+      resources:
+        - '^/api/.*$'
+      policy: one_factor
+
+    # Home Assistant (HASS)
+    - domain: 'm.hass.example.com'
+      domain_regex: '^m\.hass\.example.com/lovelace/0?external_auth=1$'
+      methods: ['GET']
+      resources:
+        - '^/api/.*$'
+      policy: one_factor
+
+    # Frigate UI
+    - domain: 'frigate.example.com'
+      networks:
+        - 'local'
+        - 'private'
+      subject:
+        - 'group:Admins'
+        - 'group:Users'
+      policy: one_factor
+
+    # Grafana Admin Routes
+    - domain: 'grafana.example.com'
+      resources:
+        - '^/admin.*$'
+      policy: two_factor
+
+    # Gotify Full UI Access
+    - domain: 'gotify.example.com'
+      policy: two_factor
+
+    # Compreface Full UI Access
+    - domain: 'compreface.example.com'
+      policy: two_factor
+
+    ##############################################
+    # 🧼 Catch-All Rule (fallback MFA for everything else)
+    ##############################################
+    - domain:
+        - '*.example.com'
+        - 'example.com'
+      policy: two_factor
+
+# Session Section
+session:
+  secret: '{{ secret "/run/secrets/authelia_session_secret" }}'
+  name: 'authelia_session'
+  same_site: 'lax'
+  inactivity: '8h'
+  expiration: '9h'
+  remember_me: '1d'
+  cookies:
+    - domain: 'example.com'
+      authelia_url: 'https://authelia.example.com'
+      default_redirection_url: 'https://example.com'
+regulation:
+  max_retries: 3
+  find_time: '2 minutes'
+  ban_time: '15 minutes'
+storage:
+  # local:
+  #  path: '/config/db.sqlite3'
+  postgres:
+    address: postgresql:5432
+    database: authelia_db
+    schema: public
+    username: authelia
+    password: '{{ secret "/run/secrets/postgresql_user_password.secret" }}'
+
+# Notification Section
+notifier:
+  # filesystem:
+    # filename: '/config/notifications.txt'
+  disable_startup_check: false
+  smtp:
+    address: 'submission://smtp.gmail.com:587'
+    timeout: '15 seconds'
+    username: 'admin@example.com'
+    # password: '{{ secret "/run/secrets/admin_email_app_password.secret" }}' # ENV Variable handles passing it in correctly
+    sender: 'Authelia <admin@example.com>'
+    subject: "[Authelia] {title}"
+    startup_check_address: 'admin@example.com'
+identity_providers:
+  oidc:
+    hmac_secret: '<HMAC_SECRET_ID>'
+    jwks:
+    -
+      key_id: # This value is automatically generated if not provided. It's recommended to not configure this.
+      algorithm: 'RS256'
+      use: 'sig'
+      key: |
+        -----BEGIN PRIVATE KEY-----
+        <JWKS_PRIVATE_KEY_VALUE>
+        -----END PRIVATE KEY-----
+    enable_client_debug_messages: false
+    minimum_parameter_entropy: 8 # DO NOT CHANGE
+    enforce_pkce: 'public_clients_only' # DO NOT CHANGE
+    enable_jwt_access_token_stateless_introspection: false # DO NOT CHANGE
+    discovery_signed_response_alg: 'none' # Mostly ignored by clients and has a performance cost.
+    discovery_signed_response_key_id: '' # Mostly ignored by clients and has a performance cost.
+    lifespans:
+      access_token: '1 hour'
+      authorize_code: '1 minute'
+      id_token: '1 hour'
+      refresh_token: '90 minutes'
+    clients:
+      -
+        client_id: '<PORTAINER_CLIENT_ID>'
+        client_name: 'Portainer'
+        client_secret: '$argon2id$v=19$m=65536,t=3,p=<HASHED_PASSWORD_VALUE>'
+        public: false
+        redirect_uris:
+          - 'https://portainer.example.com'
+        scopes:
+          - 'openid'
+          - 'profile'
+          - 'groups'
+          - 'email'
+        authorization_policy: 'two_factor'
+        userinfo_signed_response_alg: 'none'
+        token_endpoint_auth_method: 'client_secret_post'

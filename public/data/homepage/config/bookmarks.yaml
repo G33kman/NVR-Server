@@ -1,0 +1,26 @@
+- Documentation:
+    - Github:
+        - icon: mdi-github-#eaeaea
+          href: https://github.com/G33kman/NVR-Server
+          description: "NVR Server Documentation"
+
+- Domain:
+    - Cloudflare Dashboard:
+        - icon: si-cloudflare-#F38020
+          href: https://dash.cloudflare.com
+
+- Social:
+    - Business 1 FaceBook:
+        - icon: mdi-glass-wine-#0066ff
+          href: https://www.facebook.com/<PATH>
+    - Business 2 FaceBook:
+        - icon: https://www.example.com/assets/images/favicons/favicon.ico
+          href: https://www.facebook.com/<PATH>
+
+- Websites:
+    - Business 1 Website:
+        - icon: mdi-glass-wine-#0066ff
+          href: https://example.com
+    - Business 2 Website:
+        - icon: https://www.example.com/assets/images/favicons/favicon.ico
+          href: https://www.example.com

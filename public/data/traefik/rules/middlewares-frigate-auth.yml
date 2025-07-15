@@ -1,0 +1,8 @@
+http:
+  middlewares:
+    middlewares-frigate-auth:
+      headers:
+        customRequestHeaders:
+          X-Proxy-Secret: <PROXY_SECRET_VALUE>
+          X-Forwarded-User: <AUTHELIA_USERNAME>
+          X-Forwarded-Role: <AUTHELIA_ROLE

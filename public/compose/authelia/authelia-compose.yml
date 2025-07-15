@@ -1,0 +1,69 @@
+services:
+  authelia: # Authentication System Server
+    container_name: "${APP_NAME}"
+    image: "${REPO}/${NAME}:${TAG}"
+    env_file:
+      - ${DIR_ROOT}/.env
+      - ${APP_NAME}.env
+    volumes:
+      - "${SYS_TIME}"
+      - "authelia_data:/${DIR_INT_CONFIG}"
+      - "${DIR_DATA}/${APP_NAME}:${DIR_INT_CONFIG}"
+    security_opt:
+      - ${PRIVILEGES_DEFAULT}
+    privileged: false
+    command: ["authelia", "--config", "/config/configuration.yml", "--config.experimental.filters", "template"]
+    restart: ${RESTART_NORMAL}
+    depends_on:
+      postgresql:
+        condition: service_healthy
+      traefik:
+        condition: service_healthy
+    deploy:
+      resources:
+        limits:
+          cpus: '${CPU_LIMIT}'
+          memory: '${RAM_LIMIT}'
+        reservations:
+          cpus: '${CPU_RESERVE}'
+          memory: '${RAM_RESERVE}'
+    # user: ${PUID}:${PGID}
+    hostname: ${APP_NAME}
+    networks:
+      private:
+        ipv4_address: ${IP_PRIVATE}
+      public:
+        ipv4_address: ${IP_PUBLIC}
+    secrets:
+      - source: ADMIN_EMAIL_APP_PASSWORD
+        target: admin_email_app_password.secret
+      - source: POSTGRES_USER_PASSWORD
+        target: postgresql_user_password.secret
+      - source: AUTH_JWT_SECRET
+        target: authelia_jwt_secret
+      - source: AUTH_SESSION_SECRET
+        target: authelia_session_secret
+      - source: AUTH_STORAGE_KEY
+        target: authelia_storage_encryption_key
+      - source: AUTH_DUO_IKEY
+        target: authelia_duo_ikey.secret
+      - source: AUTH_DUO_SKEY
+        target: authelia_duo_skey.secret
+    labels:
+      ## Custom Labels
+      - "${LABEL_DOMAIN}=${APP_NAME}"
+      ## Traefik
+      - "traefik.enable=true"
+      - "${TR_RTR}.entrypoints=websecure"
+      - "${TR_RTR}.rule=Host(`${APP_NAME}.${DOMAIN_NAME}`) || Host(`www.${APP_NAME}.${DOMAIN_NAME}`)"
+      - "${TR_RTR}.middlewares=chain-no-auth@file"
+      - "${TR_RTR}.service=${APP_NAME}-svc"
+      - "${TR_SVC}.loadbalancer.server.port=${PORT_HTTP}"
+      ## Portainer Access
+      - "io.portainer.accesscontrol.teams=API-Team"
+      ## Kuma Internal Monitor Route
+      - "${TR_RTR_KUMA}.rule=Host(`${APP_NAME}.${DOMAIN_NAME}`) && PathPrefix(`/`)"
+      - "${TR_RTR_KUMA}.entrypoints=websecure"
+      - "${TR_RTR_KUMA}.priority=20"
+      - "${TR_RTR_KUMA}.service=${APP_NAME}-svc"
+      - "${TR_RTR_KUMA}.middlewares=middlewares-internal-only@file,chain-no-auth@file"

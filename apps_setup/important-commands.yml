@@ -1,0 +1,519 @@
+# ==============================================================================
+# Important Commands Reference for Host System & Docker Environment
+# ==============================================================================
+  #
+  # @Author_NAME: Ryan Morris
+  # @PROJECT_NAME: NVR-Server
+  # @CREATION_DATE:   2025-07-10
+  # @MODIFIED_BY: Ryan Morris
+  # @MODIFIED_DATE:  2025-07-12
+  #
+  # @Overview:
+  #   This file contains a curated list of essential commands for managing
+  #   both the underlying Ubuntu Linux host system and the Docker/Compose
+  #   environment for the Project.
+  #
+  # @Purpose:
+  #   To serve as a quick reference guide for administrators, aiding in
+  #   setup, configuration, maintenance, and troubleshooting by documenting
+  #   key commands and their usage within this specific system context.
+  #
+  # @SECTIONS:
+  #   - SYSTEM:   # Commands related to the Docker Host OS.
+  #   - DOCKER:   # Commands for managing Docker engine, containers, images, etc.
+  #   - COMPOSE:  # Commands for managing the multi-container stack via Docker Compose.
+  #
+  # NOTES:
+  #   - Replace placeholders like <PLACEHOLDER> with actual values relevant to the system.
+  #   - To see a list of options and parameters for a command, often you can run: <command> --help
+  #   - To see the detailed manual page for many system commands, run: man <command>
+  #   - Docker and Docker Compose commands usually have extensive help via: docker <subcommand> --help or docker compose <subcommand> --help
+  #   - Commands prefixed with 'sudo' require administrator privileges.
+  #
+# ==============================================================================
+
+### SYSTEM COMMANDS (Docker Host)
+SYSTEM:
+
+  # --- Package Management (APT) ---
+    # Update package lists
+    APT_UPDATE:
+      DESCRIPTION: "Resynchronizes the package index files from configured sources."
+      EXAMPLE: "sudo apt update"
+      NOTES: "Run this before installing or upgrading packages."
+
+    # Upgrade installed packages
+    APT_UPGRADE:
+      DESCRIPTION: "Installs Updates to any packages currently installed."
+      EXAMPLE: "sudo apt upgrade"
+      NOTES: "Use 'sudo apt full-upgrade' for upgrades that may remove/install dependencies."
+
+    # Search for a package
+    APT_SEARCH: # 'sudo' not required
+      DESCRIPTION: "Searches for a specified package."
+      EXAMPLE: "apt search <PACKAGE_NAME>"
+      NOTES: "Will return any packages that contain the <PACKAGE_NAME> in it."
+
+    # Install a package
+    APT_INSTALL:
+      DESCRIPTION: "Installs a specified package and its dependencies."
+      EXAMPLE: "sudo apt install <PACKAGE_NAME>"
+      NOTES: "Can install multiple packages by including other packages with a 'space' inbetween each package."
+
+    # Remove a package
+    APT_REMOVE:
+      DESCRIPTION: "Removes a specified package."
+      EXAMPLE: "sudo apt remove <PACKAGE_NAME>"
+      NOTES:
+        - "Use 'sudo apt purge <PACKAGE_NAME>' to remove configuration files too."
+        - "Use 'sudo apt autoremove' to remove unused dependencies afterwards."
+
+    # --- Permissions Management ---
+    # Change standard file ownership
+    CHOWN:
+      DESCRIPTION: "Change the ownership of a file or directory"
+      EXAMPLE: "sudo chown <USER>:<GROUP> /<PATH_TO_DIRECTORY>/OR/FILE.txt"
+      NOTES: "Use '-R' (capitalized) for recursive."
+
+    # Change standard file permissions
+    CHMOD:
+      DESCRIPTION: "Changes the standard Unix file access permissions (read, write, execute for owner, group, others)."
+      EXAMPLE: "sudo chmod 775 /<PATH_TO_DIRECTORY>"
+      NOTES: "775 = Owner:rwx, Group:rwx, Others:rx. Use '-R' (capitalized) for recursive."
+
+    # Set Access Control Lists (ACLs)
+    SETFACL:
+      DESCRIPTION: "Sets fine-grained File Access Control Lists (ACLs), will maintain permissions for future files and directories."
+      EXAMPLE:
+        # Grant user '<USER_NAME>' and group '<GROUP_NAME>' recursive rwx on <DIRECTORY_PATH>
+        - "sudo setfacl -Rdm u:<USER_NAME>:rwx /<DIRECTORY/OR/FILE.txt"
+        - "sudo setfacl -Rm u:<USER_NAME>:rwx /<DIRECTORY/OR/FILE.txt"
+        - "sudo setfacl -Rdm g:docker:rwx /<DIRECTORY/OR/FILE.txt"
+        - "sudo setfacl -Rm g:docker:rwx /<DIRECTORY/OR/FILE.txt"
+      NOTES: 
+        - "Requires 'acl' package (sudo apt install acl)."
+        - "-R=Recursive, -m=Modify, -d=Default (for new files/dirs)."
+        - "Replace user/path as needed."
+
+  # --- Filesystem & Directory ---
+    # List directory contents
+    LS:
+      DESCRIPTION: "Lists directory contents."
+      EXAMPLE: "ls -alh /<PATH_TO_DIRECTORY>/"
+      NOTES: "-a=all (incl. hidden), -l=long format, -h=human-readable sizes."
+
+    # Show disk usage
+    DF:
+      DESCRIPTION: "Reports file system disk space usage."
+      EXAMPLE: "df -h"
+      NOTES: "-h = human-readable sizes."
+
+    # Show directory size
+    DU:
+      DESCRIPTION: "Estimates file space usage for a directory."
+      EXAMPLE: "du -sh /<PATH_TO_DIRECTORY>/"
+      NOTES: "-s=summary, -h=human-readable."
+
+    # Create directory
+    MKDIR:
+      DESCRIPTION: "Creates directories."
+      EXAMPLE: "mkdir -p /path/to/new/directory"
+      NOTES: "-p = create parent directories as needed, no error if exists."
+
+  # --- User/Group Management ---
+    # Add user to a group
+    USERMOD_ADDGROUP:
+      DESCRIPTION: "Adds an existing user to a supplementary group."
+      EXAMPLE: "sudo usermod -aG docker <USERNAME>"
+      NOTES: "Crucial for allowing a non-root user to manage Docker. User needs to log out/in for change to take effect. -a=append, -G=groups."
+
+    # Check user's groups
+    GROUPS:
+      DESCRIPTION: "Prints the groups a user is in."
+      EXAMPLE: "groups <USERNAME>"
+      NOTES: "Run without username to see current user's groups."
+
+  # --- System Information ---
+    # Check OS version
+    LSB_RELEASE:
+      DESCRIPTION: "Prints distribution-specific information (Ubuntu version)."
+      EXAMPLE: "lsb_release -a"
+      NOTES: "Use this when checking if the OS needs to be updated (not just packages)."
+
+    # Check system uptime and load
+    UPTIME:
+      DESCRIPTION: "Shows how long the system has been running, user count, and load averages."
+      EXAMPLE: "uptime"
+      NOTES: "Can be used as a quick way to see current 'logged in' users."
+
+  # Check memory usage
+    FREE:
+      DESCRIPTION: "Displays amount of free and used memory in the system."
+      EXAMPLE: "free -h"
+      NOTES: "-h = human-readable."
+
+# ==============================================================================
+### DOCKER COMMANDS (Manage Docker Engine, Containers, Images, etc.)
+DOCKER:
+
+  # --- Container Lifecycle & Management ---
+  # List running containers
+  DOCKER_PS:
+    DESCRIPTION: "Lists running containers."
+    EXAMPLE: 'sudo docker ps -a --format "table {{.Image}}\t{{.Status}}\t{{.Names}}"'
+    NOTES: "Used to list the status of all containers that are currently created in the Docker Stack."
+
+  # Remove a container
+  DOCKER_RM:
+    DESCRIPTION: "Removes one or more containers. Container must be stopped first."
+    EXAMPLE: "sudo docker rm <CONTAINER_ID_OR_NAME>"
+    NOTES: "Use 'docker rm -f <CONTAINER_ID_OR_NAME>' to force remove a running container (use with caution)."
+
+  # View container logs
+  DOCKER_LOGS:
+    DESCRIPTION: "Fetches the logs of a container."
+    EXAMPLE: "sudo docker logs -f <CONTAINER_ID_OR_NAME>"
+    NOTES: "Use Docker Compose instead"
+
+  # Execute a command in a running container
+  DOCKER_EXEC:
+    DESCRIPTION: "Runs a command inside a running container."
+    EXAMPLE: "sudo docker exec -it <CONTAINER_ID_OR_NAME> <TTY_NAME>"
+    NOTES: "-i = interactive, -t = allocate pseudo-TTY. Useful for debugging."
+
+  # Inspect a container
+  DOCKER_INSPECT:
+    DESCRIPTION: "Returns low-level information on Docker objects (like containers)."
+    EXAMPLE: "sudo docker inspect <CONTAINER_ID_OR_NAME>"
+    NOTES:
+      - "Output is in JSON format. Useful for finding IP addresses, mounts, etc.."
+      - "This can also be used with a Docker 'Volume', 'Image' or 'Network'."
+
+  # --- Image Management ---
+  # List images
+  DOCKER_IMAGES:
+    DESCRIPTION: "Lists downloaded Docker images."
+    EXAMPLE: "sudo docker images"
+    NOTES: "Use '-a' to include (intermediate) images."
+
+  # Pull an image
+  DOCKER_PULL:
+    DESCRIPTION: "Downloads an image from a registry (like Docker Hub)."
+    EXAMPLE: "docker pull <IMAGE_NAME>:<TAG>"
+    NOTES: "Example: docker pull ubuntu:latest"
+
+  # Remove an image
+  DOCKER_RMI:
+    DESCRIPTION: "Removes one or more images."
+    EXAMPLE: "docker rmi <IMAGE_ID_OR_NAME>"
+    NOTES: "Cannot remove images used by existing containers (stop/remove containers first)."
+
+  # --- Volume Management ---
+  # List volumes
+  DOCKER_VOLUME_LS:
+    DESCRIPTION: "Lists Docker volumes."
+    EXAMPLE: "docker volume ls"
+    NOTES: ""
+
+  # Remove a volume
+  DOCKER_VOLUME_RM:
+    DESCRIPTION: "Removes one or more volumes. Volumes must not be in use by containers."
+    EXAMPLE: "docker volume rm <VOLUME_NAME>"
+    NOTES: "Warning: This permanently deletes the data in the volume."
+
+  # Remove unused volumes
+  DOCKER_VOLUME_PRUNE:
+    DESCRIPTION: "Removes all local volumes not used by at least one container."
+    EXAMPLE: "docker volume prune"
+    NOTES: "Review carefully before confirming, as data will be deleted."
+
+  # --- Network Management ---
+  # List networks
+  DOCKER_NETWORK_LS:
+    DESCRIPTION: "Lists Docker networks."
+    EXAMPLE: "docker network ls"
+    NOTES: ""
+
+  # --- System ---
+  # Show Docker version info
+  DOCKER_VERSION:
+    DESCRIPTION: "Shows Docker version information for Client and Server."
+    EXAMPLE: "docker version"
+    NOTES: ""
+
+  # Display system-wide information
+  DOCKER_INFO:
+    DESCRIPTION: "Displays system-wide information about the Docker installation."
+    EXAMPLE: "docker info"
+    NOTES: "Shows storage driver, logging driver, kernel version, number of containers/images, etc."
+
+  # Clean up unused resources
+  DOCKER_SYSTEM_PRUNE:
+    DESCRIPTION: "Removes unused Docker resources: stopped containers, dangling images, build cache, and unused networks."
+    EXAMPLE: "docker system prune"
+    NOTES: "Use 'docker system prune -a' to also remove unused images. Use 'docker system prune --volumes' to also remove unused volumes (use with extreme caution)."
+
+# ==============================================================================
+### DOCKER COMPOSE COMMANDS (Manage Multi-Container Applications)
+COMPOSE:
+
+  # Navigate to Compose directory
+  NAVIGATE_COMPOSE_DIR:
+    DESCRIPTION: "Change directory to where your main docker-compose.yml file is located."
+    EXAMPLE: "cd /compose/" # Adjust based on your ROOT env var
+    NOTES: "Most 'docker compose' commands need to be run from this directory or specified with '-f <path>/docker-compose.yml'."
+
+  # Start services
+  COMPOSE_UP:
+    DESCRIPTION: "Builds, (re)creates, starts, and attaches to containers for a service."
+    EXAMPLE: "docker compose up -d"
+    NOTES: "-d = detached mode (run in background). Run without '-d' to see logs attached. Can specify services: 'docker compose up -d <SERVICE_NAME_1> <SERVICE_NAME_2>'."
+
+  # Stop services
+  COMPOSE_DOWN:
+    DESCRIPTION: "Stops containers and removes containers, networks, volumes, and images created by 'up'."
+    EXAMPLE: "docker compose down"
+    NOTES: "Use 'docker compose down -v' to also remove named volumes declared in the 'volumes' section of the Compose file (Warning: deletes data)."
+
+  # Restart services
+  COMPOSE_RESTART:
+    DESCRIPTION: "Restarts all services defined in the Compose file."
+    EXAMPLE: "docker compose restart"
+    NOTES: "Can specify services: 'docker compose restart <SERVICE_NAME_1>'."
+
+  # Pull service images
+  COMPOSE_PULL:
+    DESCRIPTION: "Pulls the latest images for services defined in the Compose file."
+    EXAMPLE: "docker compose pull"
+    NOTES: "Useful before 'docker compose up -d' to ensure you are using updated images."
+
+  # List containers for services
+  COMPOSE_PS:
+    DESCRIPTION: "Lists the containers managed by Compose for the current project."
+    EXAMPLE: "docker compose ps"
+    NOTES: ""
+
+  # View logs for services
+  COMPOSE_LOGS:
+    DESCRIPTION: "Displays log output from services."
+    EXAMPLE: "docker compose logs -f"
+    NOTES: "-f = follow log output. Specify a service: 'docker compose logs -f <SERVICE_NAME>'. Use '--tail N' for last N lines."
+
+  # Validate and view compose file configuration
+  COMPOSE_CONFIG:
+    DESCRIPTION: "Validates and views the effective Compose configuration after merging files and substituting variables."
+    EXAMPLE: "docker compose config"
+    NOTES: "Useful for debugging your docker-compose.yml files."
+
+  # Execute a command in a running service container
+  COMPOSE_EXEC:
+    DESCRIPTION: "Executes a command in a running container managed by a service."
+    EXAMPLE: "docker compose exec <SERVICE_NAME> <COMMAND>"
+    NOTES: "Example: docker compose exec homeassistant bash"
+
+  # Show Docker Compose version
+  COMPOSE_VERSION:
+    DESCRIPTION: "Shows Docker Compose version information."
+    EXAMPLE: "docker compose version
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+Oh sorry, I didn't explain that quite right.
+I will have commands in this file for managing things on the Ubuntu System (Docker Host),
+but they won't be related to Docker specifically,
+and then I will have another section for Docker Specific related commands.
+
+So I would have something like this:
+'important-commands.yml'
+```
+# <BEGIN_FILE_DESCRIPTION_COMMENT_SECTION>
+#
+# @Author: <MY_NAME>
+# @CREATED: <DATE_FILE_CREATED>
+# @MODIFIED: <LAST_MODIFIED_DATE>
+# @Overview: <FILE_OVERVIEW>
+# @Purpose: <DESCRIPTION_PURPOSE>
+# @SECTIONS:
+#  - <SECTION_1> # LINUX SYSTEM COMMANDS
+#  - <SECTION_2> # DOCKER SPECIFIC COMMANDS
+#  - <SECTION_3> # DOCKER COMPOSE COMMANDS
+#
+# NOTES:
+#  - To see list of options and parameters, run the command with the '--help' added to the end.
+#  - To see the documentation for a command run the 'man <command>' command.
+#  - <OTHER_NOTES>
+#
+# <OTHER_IMPORTANT_INFORMATION_HERE>
+#
+# <END_FILE_DESCRIPTION_COMMENT_SECTION> 
+
+
+### SYSTEM COMMANDS
+SYSTEM_COMMANDS:
+  # Short Description of Command 1
+  SYSTEM_COMMAND_1:
+    DESCRIPTION: "<SYSTEM_COMMAND_1_DESCRIPTION>"
+    EXAMPLE: "<SYSTEM_COMMAND_1_EXAMPLE>"
+    NOTES: "<SYSTEM_COMMAND_1_NOTES>"
+
+  # Short Description of Command 2
+  SYSTEM_COMMAND_2:
+    DESCRIPTION: "<SYSTEM_COMMAND_2_DESCRIPTION>"
+    EXAMPLE: "<SYSTEM_COMMAND_2_EXAMPLE>"
+    NOTES: "<SYSTEM_COMMAND_2_NOTES>"
+
+  # OTHER SYSTEM COMMANDS HERE
+
+DOCKER_COMMANDS:
+  # Short Description of Docker Command 1
+  DOCKER_COMMAND_1:
+    DESCRIPTION: "<DOCKER_COMMAND_1_DESCRIPTION>"
+    EXAMPLE: "<DOCKER_COMMAND_1_EXAMPLE>"
+    NOTES: "<DOCKER_COMMAND_1_NOTES>"
+
+  # Short Description of Docker Command 2
+  DOCKER_COMMAND_2:
+    DESCRIPTION: "<DOCKER_COMMAND_2_DESCRIPTION>"
+    EXAMPLE: "<DOCKER_COMMAND_2_EXAMPLE>"
+    NOTES: "<DOCKER_COMMAND_2_NOTES>"
+
+  # OTHER DOCKER COMMANDS HERE
+
+DOCKER_COMPOSE_COMMANDS:
+  # Short Description of Docker Command 1
+  DOCKER_COMPOSE_COMMAND_1:
+    DESCRIPTION: "<DOCKER_COMPOSE_COMMAND_1_DESCRIPTION>"
+    EXAMPLE: "<DOCKER_COMPOSE_COMMAND_1_EXAMPLE>"
+    NOTES: "<DOCKER_COMPOSE_COMMAND_1_NOTES>"
+
+  # Short Description of Docker Command 2
+  DOCKER_COMPOSE_COMMAND_2:
+    DESCRIPTION: "<DOCKER_COMPOSE_COMMAND_2_DESCRIPTION>"
+    EXAMPLE: "<DOCKER_COMPOSE_COMMAND_2_EXAMPLE>"
+    NOTES: "<DOCKER_COMPOSE_COMMAND_2_NOTES>"
+
+  # OTHER DOCKER COMPOSE COMMANDS HERE
+```
+I am definitely open to any and all suggestions or changes (additions or removals) to this example structure.
+This is just what I came up with as an idea.
+So, if you have any suggestions please add them.
+
+
+  # ==============================================================================
+  # Important Commands Reference for Docker Stack Management
+  # ==============================================================================
+  #
+  # Overview:
+  # This file serves as a reference guide containing commonly used or critical
+  # commands related to the setup, configuration, and maintenance of the Docker
+  # stack defined in this project (Simple Home Lab NVR setup based on your config).
+  #
+  # Purpose:
+  # To assist current and future administrators in understanding how certain
+  # configurations (especially permissions) were applied and to provide quick
+  # access to necessary commands for troubleshooting, modification, or replicating
+  # setup steps.
+  #
+  # Sections:
+  # The commands are grouped logically based on their function (e.g., Permissions).
+  # Each command or group includes comments explaining its purpose and usage.
+  # Replace placeholder values (like <PLACEHOLDER>) with actual system values.
+  #
+  # ==============================================================================
+
+  # --- Permissions Management ---
+
+  # Section Description: Commands related to setting file and directory permissions,
+  # often required for Docker volumes to ensure containers can read/write data.
+
+Command List:
+  # Command Group: Change Standard Unix Permissions (chmod)
+  Change Permissions:
+    description: |
+      Sets standard Unix file permissions for a directory using `chmod`.
+      The `775` permission grants:
+        - Owner: Read, Write, Execute (rwx = 4+2+1 = 7)
+        - Group: Read, Write, Execute (rwx = 4+2+1 = 7)
+        - Others: Read, Execute (r-x = 4+0+1 = 5)
+      This is often used to ensure the user running Docker and potentially the
+      docker group can manage the directory contents, while restricting write
+      access for others.
+    command: |
+      sudo chmod 775 /<PATH_TO_DIRECTORY>/
+    notes: |
+      - Replace `<PATH_TO_DIRECTORY>` with the actual target path (e.g., /docker, /compose/public).
+      - Consider using the `-R` flag (e.g., `sudo chmod -R 775 /path/`) if you need
+        to apply permissions recursively to all files and subdirectories within.
+    # Example for the main Docker data directory mentioned in your setup:
+    example: "sudo chmod -R 775 /docker"
+
+  # Command Group: Set File Access Control Lists (setfacl)
+  Set FACLs:
+    description: |
+      Configures File Access Control Lists (ACLs) for a directory using `setfacl`.
+      ACLs provide more granular permission control than standard `chmod`.
+      These specific commands grant recursive Read, Write, and Execute (rwx)
+      permissions to both a specific user and the 'docker' group for the
+      specified directory.
+      This is crucial for Docker bind mounts or volumes where containers (running
+      as specific UIDs/GIDs) and the host user need consistent access.
+    flags_explained:
+      - "-R": Apply permissions recursively to all files and subdirectories.
+      - "-m": Modify the existing ACLs of the files/directories.
+      - "-d": Modify the *default* ACLs. Default ACLs are applied to *new* items
+              created within the directory in the future.
+    commands:
+      # Grant recursive rwx permissions to a specific user for existing and new files/dirs.
+      - command: "sudo setfacl -Rdm u:<USERNAME_HERE>:rwx /<PATH_TO_DIRECTORY>/"
+        comment: "Set Default ACLs (for new files/dirs) for the user."
+      - command: "sudo setfacl -Rm u:<USERNAME_HERE>:rwx /<PATH_TO_DIRECTORY>/"
+        comment: "Set Current ACLs for the user on existing files/dirs."
+
+      # Grant recursive rwx permissions to the 'docker' group for existing and new files/dirs.
+      - command: "sudo setfacl -Rdm g:docker:rwx /<PATH_TO_DIRECTORY>/"
+        comment: "Set Default ACLs (for new files/dirs) for the 'docker' group."
+      - command: "sudo setfacl -Rm g:docker:rwx /<PATH_TO_DIRECTORY>/"
+        comment: "Set Current ACLs for the 'docker' group on existing files/dirs."
+    notes: |
+      - Replace `<USERNAME_HERE>` with the primary user managing the Docker setup (e.g., the user who owns the /docker directory).
+      - Replace `<PATH_TO_DIRECTORY>` with the target directory path (e.g., /docker, /compose).
+      - Ensure the `acl` package is installed on your system (`sudo apt update && sudo apt install acl`).
+    # Example using your user 'anand' and the main docker data path '/docker':
+    example_user: "anand"
+    example_path: "/docker"
+    example_commands:
+      - "sudo setfacl -Rdm u:anand:rwx /docker"
+      - "sudo setfacl -Rm u:anand:rwx /docker"
+      - "sudo setfacl -Rdm g:docker:rwx /docker"
+      - "sudo setfacl -Rm g:docker:rwx /docker"
+
+# --- Add More Command Sections Below ---
+# e.g., Docker Commands, Docker Compose Commands, Backup Commands, etc.

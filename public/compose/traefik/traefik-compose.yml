@@ -1,0 +1,65 @@
+services:
+  traefik: # Reverse Proxy to route traffic to Docker containers
+    container_name: ${APP_NAME}
+    image: "${NAME}:${TAG}"
+    env_file:
+      - ${DIR_ROOT}/.env
+      - ${APP_NAME}.env
+    volumes:
+      - "${SYS_TIME}"
+      - "${DIR_DATA}/${APP_NAME}/rules:${DIR_INT_RULES}"
+      - "${DIR_SSL}/acme.json:${DIR_INT_SSL}/acme.json"
+    security_opt:
+      - ${PRIVILEGES_DEFAULT}
+    privileged: false
+    restart: ${RESTART_NORMAL}
+    depends_on:
+      socket:
+        condition: service_healthy
+    deploy:
+      resources:
+        limits:
+          cpus: '${CPU_LIMIT}'
+          memory: '${RAM_LIMIT}'
+        reservations:
+          cpus: '${CPU_RESERVE}'
+          memory: '${RAM_RESERVE}'
+    healthcheck:
+      test: ["CMD", "${APP_NAME}", "healthcheck", "--ping"]
+      interval: ${HC_INTERVAL}
+      timeout: ${HC_TIMEOUT}
+      retries: ${HC_RETRIES}
+      start_period: ${HC_START_PERIOD}
+      start_interval: ${HC_START_INTERVAL}
+    hostname: ${APP_NAME}
+    networks:
+      internal:
+        ipv4_address: ${IP_INTERNAL}
+      private:
+        ipv4_address: ${IP_PRIVATE}
+      public:
+        ipv4_address: ${IP_PUBLIC}
+    ports:
+      - "0.0.0.0:${PORT_HTTP}:${PORT_HTTP}"
+      - "0.0.0.0:${PORT_HTTPS}:${PORT_HTTPS}"
+    secrets:
+      - "BASIC_AUTH_CREDENTIALS"
+      - "CF_API_EMAIL"
+      - "CF_DNS_API_TOKEN"
+    labels:
+      ## Custom Labels
+      - "${LABEL_DOMAIN}=${APP_NAME}"
+      ## Traefik Labels
+      - "${APP_NAME}.enable=true"
+      - "${TR_RTR}.entrypoints=websecure"
+      - "${TR_RTR}.rule=Host(`${APP_NAME}.${DOMAIN_NAME}`) || Host(`www.${APP_NAME}.${DOMAIN_NAME}`)"
+      - "${TR_RTR}.service=api@internal"
+      - "${TR_RTR}.middlewares=chain-authelia@file"
+      ## Portainer Access
+      - "io.portainer.accesscontrol.teams=API-Team"
+      ## Uptime-Kuma Monitor Access
+      - "${TR_RTR_KUMA}.rule=Host(`${APP_NAME}.${DOMAIN_NAME}`) && PathPrefix(`/dashboard`)"
+      - "${TR_RTR_KUMA}.entrypoints=websecure"
+      - "${TR_RTR_KUMA}.priority=20"
+      - "${TR_RTR_KUMA}.service=api@internal"
+      - "${TR_RTR_KUMA}.middlewares=middlewares-internal-only@file,chain-no-auth@file"

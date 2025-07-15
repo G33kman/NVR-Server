@@ -1,0 +1,13 @@
+# Sets the default theme on startup
+- id: set_startup_theme_for_all
+  alias: "Set Startup Theme for All Users"
+  description: "Applies a default theme to all users on Home Assistant startup."
+  trigger:
+    - platform: homeassistant
+      event: start
+  action:
+    - service: frontend.set_theme
+      data:
+        name: "g33k_theme"
+        mode: dark
+  mode: single

@@ -1,0 +1,9 @@
+http:
+  middlewares:
+    chain-gotify-authelia-noauth:
+      chain:
+        middlewares:
+          - middlewares-rate-limit
+          - middlewares-secure-headers
+          - middlewares-cors-headers
+          - middlewares-gotify-authelia-noauth

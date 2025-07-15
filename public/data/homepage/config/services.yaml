@@ -1,0 +1,117 @@
+- User Group:
+    - Surveillance:
+
+        - Frigate NVR:
+            href: 'https://frigate.{{HOMEPAGE_VAR_DOMAIN}}'
+            description: NVR System
+            icon: sh-frigate-dark
+            container: frigate
+            widget:
+              type: frigate
+              fields:
+                - cameras
+                - uptime
+              url: 'https://frigate.{{HOMEPAGE_VAR_DOMAIN}}'
+              enableRecentEvents: true
+
+        - Double-Take:
+            href: 'https://dt.{{HOMEPAGE_VAR_DOMAIN}}'
+            description: Face Training and Recognition
+            icon: mdi-face-recognition
+            container: dt
+            widget:
+              type: customapi
+              url: http://dt:3000/api/train
+              refreshInterval: 30000
+              headers:
+                Accept: application/json
+              mappings:
+                - field: total
+                  label: Training Images
+
+        - Compreface:
+            href: 'https://compreface.{{HOMEPAGE_VAR_DOMAIN}}'
+            description: Face ID Management System
+            icon: mdi-account-search
+            container: compreface
+            widget:
+              type: customapi
+              url: http://compreface:80/api/v1/recognition/subjects
+              refreshInterval: 30000
+              headers:
+                x-api-key: '{{HOMEPAGE_FILE_COMPREFACE_API_KEY}}'
+              mappings:
+                - field: subjects
+                  label: Registered Subjects
+                  format: size
+
+    - Automation:
+
+        - Home Assistant:
+            href: 'https://hass.{{HOMEPAGE_VAR_DOMAIN}}'
+            description: Smart Automation System
+            icon: 'si-homeassistant-#03A9F4'
+            container: hass
+            widget:
+              type: homeassistant
+              url: 'https://hass.{{HOMEPAGE_VAR_DOMAIN}}'
+              key: '{{HOMEPAGE_FILE_API_KEY_HASS}}'
+              custom:
+                - state: weather.forecast_home
+                  label: Current Weather
+                  value: '{attributes.wind_speed} {attributes.wind_speed_unit}'
+
+        - Gotify:
+            href: 'https://gotify.{{HOMEPAGE_VAR_DOMAIN}}'
+            description: Automated Notification System
+            icon: 'sh-gotify'
+            container: gotify
+            widget:
+              type: gotify
+              url: http://gotify:80
+              key: <GOTIFY_KEY>
+              fields:
+                - apps
+                - clients
+                - messages
+
+        - Vaultwarden:
+            href: 'https://vault.{{HOMEPAGE_VAR_DOMAIN}}'
+            description: Vaultwarden Password Manager
+            icon: 'si-vaultwarden-#0066ff'
+            container: vaultwarden
+
+- Admin Group:
+    - Management:
+        - Portainer:
+            href: 'https://portainer.{{HOMEPAGE_VAR_DOMAIN}}'
+            description: Container Management Application
+            icon: 'si-portainer-#13BEF9'
+            container: portainer
+            widget:
+              type: portainer
+              url: 'https://portainer.{{HOMEPAGE_VAR_DOMAIN}}'
+              env: 1
+              key: '{{HOMEPAGE_FILE_API_KEY_PORTAINER}}'
+    - Monitoring:
+
+        - Uptime Kuma:
+            href: 'https://kuma.{{HOMEPAGE_VAR_DOMAIN}}'
+            description: Container Uptime Monitor Application
+            icon: 'si-uptimekuma-#5cdd8b'
+            container: kuma
+            widget:
+              type: uptimekuma
+              url: 'https://kuma.{{HOMEPAGE_VAR_DOMAIN}}'
+              slug: kuma-status
+
+        - Traefik:
+            href: 'https://traefik.{{HOMEPAGE_VAR_DOMAIN}}'
+            description: Reverse-Proxy to route traffic to Docker Containers
+            icon: 'si-traefikproxy-#24a1c1'
+            container: traefik
+            widget:
+              type: traefik
+              url: 'https://traefik.{{HOMEPAGE_VAR_DOMAIN}}'
+              username: <ADMIN_USERNAME>
+              password: <ADMIN_PASSWORD>

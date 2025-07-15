@@ -1,0 +1,7 @@
+http:
+  middlewares:
+    chain-frigate-auth:
+      chain:
+        middlewares:
+          - chain-authelia
+          - middlewares-frigate-auth

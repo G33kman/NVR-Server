@@ -1,0 +1,138 @@
+# Enable authentication for UI and API
+auth: false
+
+# Log Settings
+logs:
+  level: warn
+  lines: 50
+  sql: false
+
+# UI Settings
+ui:
+  path:
+  pagination:
+    limit: 100
+  thumbnails:
+    quality: 95
+    width: 1000
+
+# Enable MQTT Subscribing and Publishing
+mqtt:
+  host: 10.2.1.15
+  username: <MQTT_USERNAME>
+  password: <MQTT_PASSWORD>
+  client_id: dt
+  topics:
+    frigate: frigate/#
+    homeassistant: homeassistant
+    matches: double-take/matches
+    cameras: double-take/cameras
+
+# Global detect Settings
+detect:
+  match:
+    save: true
+    base64: false
+    confidence: 60
+    purge: 24
+    min_area: 500
+  unknown:
+    save: true
+    base64: false
+    confidence: 40
+    purge: 24
+    min_area: 500
+
+# Frigate Settings
+frigate:
+  url: http://frigate:5000
+  update_sub_labels: true
+  stop_on_match: true
+  min_area: 20000
+  labels:
+    - person
+  attempts:
+    latest: 0
+    snapshot: 0
+    mqtt: true
+    delay: 0
+  cameras:
+    - cam_1_recognition
+    - cam_2_recognition
+  zones:
+    - camera: cam_1_recognition
+      zone: cam_1_recognition_zone
+    - camera: cam_2_recognition
+      zone: cam_2_recognition_zone
+
+# Camera Settings
+cameras:
+  # Camera 1
+  cam_1_recognition:
+    detect:
+      match:
+        save: true
+        base64: false
+        confidence: 60
+        min_area: 5000
+
+      unknown:
+        save: true
+        base64: false
+        confidence: 40
+        min_area: 5000
+
+  # Camera 2
+  cam_2_recognition:
+    detect:
+      match:
+        save: true
+        base64: false
+        confidence: 60
+        min_area: 5000
+
+      unknown:
+        save: true
+        base64: false
+        confidence: 40
+        min_area: 5000
+
+# Detector Settings
+detectors:
+  compreface:
+    url: http://compreface
+    key: <COMPREFACE_APP_KEY>
+    timeout: 15
+    det_prob_threshold: 0.75
+    opencv_face_required: false
+    face_plugins: gender,age
+    cameras:
+      - cam_1_recognition
+      - cam_2_recognition
+
+# OpenCV Settings
+opencv:
+  scale_factor: 1.05
+  min_neighbors: 4.5
+  min_size_width: 50
+  min_size_height: 50
+
+# Notify Settings
+notify:
+  gotify:
+    url: http://gotify
+    token: <GOTIFY_TOKEN>
+    priority: 0
+
+    # Camera Specific Notifications
+    cameras:
+      - cam_1_recognition
+      - cam_2_recognition
+
+# Time Settings 'https://github.com/moment/luxon/blob/master/docs/formatting.md#table-of-tokens'
+time:
+  format: X
+  timezone: America/Chicago
+
+# Telemetry Settings
+telemetry: false

@@ -1,0 +1,55 @@
+- logo:
+    icon: 'https://example.com/logo.min.svg'
+
+- resources:
+    label: CPU
+    cpu: true
+    cputemp: true
+    units: imperial
+    uptime: true
+    expanded: true
+    refresh: 3000
+
+- resources:
+    label: RAM
+    memory: true
+    expanded: true
+    refresh: 3000
+
+- resources:
+    label: Storage
+    refresh: 3600000
+    expanded: true
+    disk:
+      - /
+      - /videos/current
+      - /archives
+
+- greeting:
+    text: User Logout
+    href: 'https://authelia.example.com/logout'
+    target: _self
+    text_size: 4xl
+
+- search:
+    provider: duckduckgo
+    focus: true
+    showSearchSuggestions: true
+    target: _blank
+
+- datetime:
+    text_size: x1
+    format:
+      timeStyle: short
+      hourCycle: h12
+
+- openweathermap:
+    label: OpenWeather
+    latitude: 00.0000
+    longitude: -00.0000
+    units: imperial
+    provider: openweathermap
+    apiKey: <OPEN_WEATHER_API_KEY>
+    cache: 15
+    format:
+        maximumFractionDigits: 1

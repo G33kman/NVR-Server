@@ -1,0 +1,10 @@
+# The logger integration lets you define the level of logging activities in Home Assistant.
+# Use this to reduce error messages for specific things, just focus on log messages that matter.
+default: warn
+logs:
+  homeassistant.components.http: warn
+
+filters:
+  homeassistant.loader:
+    # Really? Cool... I know... I installed them...
+    - "We found a custom integration"

@@ -1,0 +1,321 @@
+g33k_theme:
+  modes:
+    light:
+      # --- LIGHT MODE COLOR PALETTE ---
+      # Neutral Shades
+      base-white: "#efefef"
+      base-black: "#1a1a1a"
+
+      # Primary Accent Shades
+      primary-light-shade: "#0099ff"
+      primary-base-color: "#0066ff"
+      primary-dark-shade: "#0033ff"
+
+      # Secondary Accent Shades
+      secondary-light-shade: "#ff9900"
+      secondary-base-color: "#ff6600"
+      secondary-dark-shade: "#ff3300"
+
+      # Standard Alert/Info Colors
+      standard-success: "#4CAF50" # Green
+      standard-error: "#F44336"   # Red
+      standard-warning: "#FFC107" # Amber/Orange
+      standard-info: "#2196F3"    # Info Blue
+
+      # Derived Text & Background Shades
+      light-background-main: var(--base-white)
+      light-background-secondary: "#e8e8e8" # Slightly darker for subtle depth
+      light-card-background: "#ffffff" # Pure white for crisp cards
+      light-header-background: "#e5e5e5" # Slightly off-white for header
+      light-sidebar-background: "#f5f5f5" # Light gray for sidebar
+
+      light-text-primary: var(--base-black)
+      light-text-secondary: "#555555" # Darker gray
+      light-text-disabled: "#AAAAAA" # Muted gray
+      light-text-on-accent: "#ffffff" # Text on primary/accent colors (should contrast)
+
+      # --- LIGHT MODE HA INTERFACE PROPERTIES ---
+      # Header
+      app-header-background-color: var(--light-header-background)
+      app-header-text-color: var(--light-text-primary)
+
+      # Main Interface colors
+      primary-color: var(--primary-base-color)
+      light-primary-color: var(--primary-light-shade)
+      accent-color: var(--secondary-base-color)
+
+      primary-background-color: var(--light-background-main)
+      secondary-background-color: var(--light-background-secondary)
+
+      # Text
+      primary-text-color: var(--light-text-primary)
+      secondary-text-color: var(--light-text-secondary)
+      text-primary-color: var(--light-text-primary)
+      divider-color: var(--light-background-secondary)
+      disabled-text-color: var(--light-text-disabled)
+      text-accent-color: var(--light-text-on-accent)
+
+      # Sidebar
+      sidebar-background-color: var(--light-sidebar-background)
+      sidebar-selected-background-color: var(--light-background-secondary) # Slightly darker to show selection
+
+      sidebar-icon-color: var(--light-text-secondary)
+      sidebar-text-color: var(--light-text-secondary)
+      sidebar-selected-icon-color: var(--primary-color) # HA's primary-color, whichuses the primary-base-color
+      sidebar-selected-text-color: var(--primary-color) # HA's primary-color, whichuses the primary-base-color
+
+      # Buttons
+      paper-item-icon-color: var(--light-text-secondary)
+      paper-item-icon-active-color: var(--primary-color)
+
+      # States and Badges
+      state-icon-color: var(--primary-color)
+      state-icon-active-color: var(--primary-color)
+      state-icon-unavailable-color: var(--light-text-disabled)
+
+      # Sliders
+      paper-slider-knob-color: var(--primary-base-color)
+      paper-slider-knob-start-color: var(--primary-base-color)
+      paper-slider-pin-color: var(--primary-base-color)
+      paper-slider-active-color: var(--primary-base-color)
+      paper-slider-secondary-color: var(--primary-light-shade) #uses the lighter shade for secondary track
+
+      # Labels (badges)
+      label-badge-background-color: var(--light-card-background)
+      label-badge-text-color: var(--light-text-primary)
+      label-badge-red: var(--standard-error)
+      label-badge-green: var(--standard-success)
+      label-badge-blue: var(--standard-info)
+      label-badge-yellow: var(--standard-warning)
+      label-badge-gray: var(--light-text-disabled)
+
+      # Cards
+      card-background-color: var(--light-card-background)
+      ha-card-background: var(--card-background-color)
+      ha-card-border-width: 0px
+      ha-card-border-radius: "8px"
+      ha-card-box-shadow: "0px 2px 4px 0px rgba(0,0,0,0.05)"
+      paper-dialog-background-color: var(--light-card-background)
+      paper-listbox-background-color: var(--light-card-background)
+      paper-card-background-color: var(--card-background-color)
+
+      # Switches
+      switch-checked-button-color: var(--standard-success)
+      switch-checked-track-color: var(--primary-light-shade) # Lighter track for contrast
+      switch-unchecked-button-color: var(--light-text-disabled)
+      switch-unchecked-track-color: var(--light-background-secondary)
+
+      # Toggles
+      paper-toggle-button-checked-button-color: var(--switch-checked-button-color)
+      paper-toggle-button-checked-bar-color: var(--switch-checked-track-color)
+      paper-toggle-button-unchecked-button-color: var(--switch-unchecked-button-color)
+      paper-toggle-button-unchecked-bar-color: var(--switch-unchecked-track-color)
+
+      # Table (e.g., history, logbook)
+      table-row-background-color: var(--primary-background-color)
+      table-row-alternative-background-color: var(--secondary-background-color)
+      data-table-background-color: var(--primary-background-color)
+      mdc-checkbox-unchecked-color: var(--light-text-secondary)
+
+      # Dropdowns
+      material-background-color: var(--primary-background-color)
+      material-secondary-background-color: var(--primary-background-color)
+      mdc-theme-surface: var(--primary-background-color)
+
+      # Pre/Code blocks
+      markdown-code-background-color: var(--light-background-secondary)
+
+      # Checkboxes & Select Inputs
+      mdc-select-fill-color: var(--light-card-background)
+      mdc-select-ink-color: var(--light-text-primary)
+      mdc-select-label-ink-color: var(--light-text-secondary)
+      mdc-select-idle-line-color: var(--light-text-secondary)
+      mdc-select-dropdown-icon-color: var(--light-text-secondary)
+      mdc-select-hover-line-color: var(--accent-color)
+
+      # Text Inputs
+      input-fill-color: var(--light-card-background)
+      input-dropdown-icon-color: var(--light-text-secondary)
+      input-ink-color: var(--light-text-primary)
+      input-label-ink-color: var(--light-text-secondary)
+      input-idle-line-color: var(--light-text-secondary)
+      input-hover-line-color: var(--accent-color)
+      input-disabled-ink-color: var(--light-text-disabled)
+      input-disabled-line-color: var(--light-text-disabled)
+      input-outlined-idle-border-color: var(--light-text-disabled)
+      input-outlined-hover-border-color: var(--light-text-disabled)
+      input-outlined-disabled-border-color: var(--light-text-disabled)
+      input-disabled-fill-color: rgba(0, 0, 0, 0)
+
+      # Toast (pop-up notifications)
+      paper-toast-background-color: var(--light-text-primary) # Darker text color for contrast
+      paper-toast-color: var(--light-background-main) # Text color of the toast
+
+      # Specific component status colors
+      error-color: var(--standard-error)
+      warning-color: var(--standard-warning)
+      success-color: var(--standard-success)
+      info-color: var(--standard-info)
+
+      state-on-color: var(--standard-success)
+      state-off-color: var(--standard-error)
+
+    dark:
+      # --- DARK MODE COLOR PALETTE ---
+      # Neutral Shades
+      base-white: "#efefef"
+      base-black: "#1a1a1a"
+
+      # Primary Accent Shades
+      primary-light-shade: "#0099ff"
+      primary-base-color: "#0066ff"
+      primary-dark-shade: "#0033ff"
+
+      # Secondary Accent Shades
+      secondary-light-shade: "#ff9900"
+      secondary-base-color: "#ff6600"
+      secondary-dark-shade: "#ff3300"
+
+      # Standard Alert/Info Colors
+      standard-success: "#4CAF50" # Green
+      standard-error: "#F44336"   # Red
+      standard-warning: "#FFC107" # Amber/Orange
+      standard-info: "#2196F3"    # Info Blue
+
+      # Derived Text & Background Shades
+      dark-background-main: var(--base-black)
+      dark-background-secondary: "#333333" # Slightly lighter for subtle depth
+      dark-card-background: "#383838" # Lighter than main background
+      dark-header-background: "#202020" # Even darker for header
+      dark-sidebar-background: "#252525" # Darker gray for sidebar
+
+      dark-text-primary: var(--base-white)
+      dark-text-secondary: "#cccccc" # Lighter gray
+      dark-text-disabled: "#777777" # Muted gray
+      dark-text-on-accent: "#ffffff" # Text on primary/accent colors (should contrast)
+
+      # --- DARK MODE HA INTERFACE PROPERTIES ---
+      # Header
+      app-header-background-color: var(--dark-header-background)
+      app-header-text-color: var(--dark-text-primary)
+
+      # Main Interface colors
+      primary-color: var(--primary-base-color)
+      light-primary-color: var(--primary-light-shade)
+      accent-color: var(--secondary-base-color)
+
+      primary-background-color: var(--dark-background-main)
+      secondary-background-color: var(--dark-background-secondary)
+
+      # Text
+      primary-text-color: var(--dark-text-primary)
+      secondary-text-color: var(--dark-text-secondary)
+      text-primary-color: var(--dark-text-primary)
+      divider-color: var(--dark-background-secondary)
+      disabled-text-color: var(--dark-text-disabled)
+      text-accent-color: var(--dark-text-on-accent)
+
+      # Sidebar
+      sidebar-background-color: var(--dark-sidebar-background)
+      sidebar-selected-background-color: var(--dark-background-secondary) # Lighter to show selection
+
+      sidebar-icon-color: var(--dark-text-secondary)
+      sidebar-text-color: var(--dark-text-secondary)
+      sidebar-selected-icon-color: var(--primary-color)
+      sidebar-selected-text-color: var(--primary-color)
+
+      # Buttons
+      paper-item-icon-color: var(--dark-text-secondary)
+      paper-item-icon-active-color: var(--primary-color)
+
+      # States and Badges
+      state-icon-color: var(--primary-color)
+      state-icon-active-color: var(--primary-color)
+      state-icon-unavailable-color: var(--dark-text-disabled)
+
+      # Sliders
+      paper-slider-knob-color: var(--primary-base-color)
+      paper-slider-knob-start-color: var(--primary-base-color)
+      paper-slider-pin-color: var(--primary-base-color)
+      paper-slider-active-color: var(--primary-base-color)
+      paper-slider-secondary-color: var(--primary-dark-shade) #uses the darker shade for secondary track
+
+      # Labels (badges)
+      label-badge-background-color: var(--dark-card-background)
+      label-badge-text-color: var(--dark-text-primary)
+      label-badge-red: var(--standard-error)
+      label-badge-green: var(--standard-success)
+      label-badge-blue: var(--standard-info)
+      label-badge-yellow: var(--standard-warning)
+      label-badge-gray: var(--dark-text-disabled)
+
+      # Cards
+      card-background-color: var(--dark-card-background)
+      ha-card-background: var(--card-background-color)
+      ha-card-border-width: 0px
+      ha-card-border-radius: "8px"
+      ha-card-box-shadow: "0px 2px 8px 0px rgba(0,0,0,0.3)"
+      paper-dialog-background-color: var(--dark-card-background)
+      paper-listbox-background-color: var(--dark-card-background)
+      paper-card-background-color: var(--card-background-color)
+
+      # Switches
+      switch-checked-button-color: var(--standard-success)
+      switch-checked-track-color: var(--primary-dark-shade) # Darker track for contrast
+      switch-unchecked-button-color: var(--dark-text-disabled)
+      switch-unchecked-track-color: var(--dark-background-secondary)
+
+      # Toggles
+      paper-toggle-button-checked-button-color: var(--switch-checked-button-color)
+      paper-toggle-button-checked-bar-color: var(--switch-checked-track-color)
+      paper-toggle-button-unchecked-button-color: var(--switch-unchecked-button-color)
+      paper-toggle-button-unchecked-bar-color: var(--switch-unchecked-track-color)
+
+      # Table (e.g., history, logbook)
+      table-row-background-color: var(--primary-background-color)
+      table-row-alternative-background-color: var(--secondary-background-color)
+      data-table-background-color: var(--primary-background-color)
+      mdc-checkbox-unchecked-color: var(--dark-text-secondary)
+
+      # Dropdowns
+      material-background-color: var(--primary-background-color)
+      material-secondary-background-color: var(--primary-background-color)
+      mdc-theme-surface: var(--primary-background-color)
+
+      # Pre/Code blocks
+      markdown-code-background-color: var(--dark-background-secondary)
+
+      # Checkboxes & Select Inputs
+      mdc-select-fill-color: var(--dark-card-background)
+      mdc-select-ink-color: var(--dark-text-primary)
+      mdc-select-label-ink-color: var(--dark-text-secondary)
+      mdc-select-idle-line-color: var(--dark-text-secondary)
+      mdc-select-dropdown-icon-color: var(--dark-text-secondary)
+      mdc-select-hover-line-color: var(--accent-color)
+
+      # Text Inputs
+      input-fill-color: var(--dark-card-background)
+      input-dropdown-icon-color: var(--dark-text-secondary)
+      input-ink-color: var(--dark-text-primary)
+      input-label-ink-color: var(--dark-text-secondary)
+      input-idle-line-color: var(--dark-text-secondary)
+      input-hover-line-color: var(--accent-color)
+      input-disabled-ink-color: var(--dark-text-disabled)
+      input-disabled-line-color: var(--dark-text-disabled)
+      input-outlined-idle-border-color: var(--dark-text-disabled)
+      input-outlined-hover-border-color: var(--dark-text-disabled)
+      input-outlined-disabled-border-color: var(--dark-text-disabled)
+      input-disabled-fill-color: rgba(0, 0, 0, 0)
+
+      # Toast (pop-up notifications)
+      paper-toast-background-color: var(--dark-text-primary) # Lighter text color for contrast
+      paper-toast-color: var(--dark-background-main) # Text color of the toast
+
+      # Specific component status colors
+      error-color: var(--standard-error)
+      warning-color: var(--standard-warning)
+      success-color: var(--standard-success)
+      info-color: var(--standard-info)
+
+      state-on-color: var(--standard-success)
+      state-off-color: var(--standard-error)

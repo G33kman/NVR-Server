@@ -1,0 +1,49 @@
+### Project Name
+name: nvr-server
+
+### Docker Networks
+networks:
+  internal: # Only for Docker Socket Access (Internal ONLY)
+    name: internal
+    driver: bridge
+    ipam:
+      config:
+        - subnet: ${IP_INTERNAL_BASE}0/24
+    driver_opts:
+      io.portainer.accesscontrol.teams: "API-Team"
+  private: # All Containers (for Traefik)
+    name: private
+    driver: bridge
+    ipam:
+      config:
+        - subnet: ${IP_PRIVATE_BASE}0/24
+    driver_opts:
+      io.portainer.accesscontrol.teams: "API-Team"
+  public: # Only for Web UI Access
+    name: public
+    driver: bridge
+    ipam:
+      config:
+        - subnet: ${IP_PUBLIC_BASE}0/24
+    driver_opts:
+      io.portainer.accesscontrol.teams: "API-Team"
+
+### Docker Volumes
+volumes:
+  # Container Management UI
+  <APP_NAME>_data:
+    labels:
+      io.portainer.accesscontrol.teams: "API-Team"
+
+### Docker Secrets
+secrets:
+  ## Administrator Username
+  SECRET_NAME:
+    file: ${DIR_SECRETS}/<APP_DIRECTORY>/secret_file_name.secret
+
+### Docker Container Includes
+include:
+  ## <APP_NAME>
+  - path: ${DIR_COMPOSE}/<APP_NAME>/<APP_NAME>-compose.yml
+    env_file:
+     - ${DIR_COMPOSE}/<APP_NAME>/<APP_NAME>.env

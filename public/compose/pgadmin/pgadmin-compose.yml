@@ -1,0 +1,62 @@
+services:
+  pgadmin: # A web-based administration and development platform for managing PostgreSQL databases
+    container_name: ${APP_NAME}
+    image: "${REPO}/${NAME}:${TAG}"
+    env_file:
+      - ${DIR_ROOT}/.env
+      - ${APP_NAME}.env
+    entrypoint: ["/bin/sh", "/custom-entrypoint.sh"]
+    volumes:
+      - "${SYS_TIME}"
+      - "${APP_NAME}_data:${DIR_INT_BASE}"
+      - "${DIR_DATA}/${APP_NAME}/config/servers.json:/${APP_NAME}4/servers.json:ro"
+      - "${DIR_DATA}/${APP_NAME}/scripts/entrypoint.sh:/custom-entrypoint.sh:ro"
+    security_opt:
+      - ${PRIVILEGES_DEFAULT}
+    privileged: false
+    restart: ${RESTART_NORMAL}
+    depends_on:
+      postgresql:
+        condition: service_healthy
+    deploy:
+      resources:
+        limits:
+          cpus: '${CPU_LIMIT}'
+          memory: '${RAM_LIMIT}'
+        reservations:
+          cpus: '${CPU_RESERVE}'
+          memory: '${RAM_RESERVE}'
+    healthcheck:
+      test: ["CMD", "${HC_CMD}", "${DB_HC_CMD}"]
+      interval: ${HC_INTERVAL}
+      timeout: ${HC_TIMEOUT}
+      retries: ${HC_RETRIES}
+      start_period: ${HC_START_PERIOD}
+      start_interval: ${HC_START_INTERVAL}
+    hostname: ${APP_NAME}
+    user: "${PUID}:${PGID}"
+    networks:
+      private:
+        ipv4_address: ${IP_PRIVATE}
+      public:
+        ipv4_address: ${IP_PUBLIC}
+    secrets:
+      - ADMIN_PASSWORD_BASIC
+    labels:
+      ## Custom Labels
+      - "${LABEL_DOMAIN}=${APP_NAME}"
+      ## Traefik
+      - "traefik.enable=true"
+      - "${TR_RTR}.entrypoints=websecure"
+      - "${TR_RTR}.rule=Host(`${APP_NAME}.${DOMAIN_NAME}`) || Host(`www.${APP_NAME}.${DOMAIN_NAME}`)"
+      - "${TR_RTR}.middlewares=chain-authelia@file"
+      - "${TR_RTR}.service=${APP_NAME}-svc"
+      - "${TR_SVC}.loadbalancer.server.port=${PORT_HTTP}"
+      ## Portainer Access
+      - "io.portainer.accesscontrol.teams=API-Team"
+      ## Kuma Internal Monitor Route
+      - "${TR_RTR_KUMA}.rule=Host(`${APP_NAME}.example.com`) && PathPrefix(`/`)"
+      - "${TR_RTR_KUMA}.entrypoints=websecure"
+      - "${TR_RTR_KUMA}.priority=20"
+      - "${TR_RTR_KUMA}.service=${APP_NAME}-svc"
+      - "${TR_RTR_KUMA}.middlewares=middlewares-internal-only@file,chain-no-auth@file"

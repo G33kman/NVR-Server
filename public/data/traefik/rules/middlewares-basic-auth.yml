@@ -1,0 +1,6 @@
+http:
+  middlewares:
+    middlewares-basic-auth:
+      basicAuth:
+        usersFile: "/run/secrets/BASIC_AUTH_CREDENTIALS"
+        realm: "Traefik 3 Basic Auth"

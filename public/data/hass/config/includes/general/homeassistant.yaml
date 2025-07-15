@@ -1,0 +1,8 @@
+name: Business
+latitude: !secret biz_lat
+longitude: !secret biz_long
+elevation: 1007
+unit_system: us_customary
+time_zone: America/Chicago
+internal_url: !secret internal_url
+external_url: !secret external_url

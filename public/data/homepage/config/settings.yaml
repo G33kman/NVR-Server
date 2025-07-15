@@ -1,0 +1,77 @@
+### General Settings
+title: NVR-Server
+favicon: https://www.example.com/assets/images/favicons/favicon.ico
+target: _blank
+useEqualHeights: true
+headerStyle: boxedWidgets
+hideVersion: true
+showStats: true
+statusStyle: basic # or dot
+
+### Quicklaunch Search
+quicklaunch:
+  searchDescription: true
+  hideInternetSearch: false
+  showSearchSuggestions: true
+  hideVisitURL: false
+  provider: duckduckgo
+
+### Theme Settings
+background:
+  image: ./images/bkg.jpg
+  blur: md
+  saturate: 50
+  brightness: 50
+  opacity: 50
+theme: dark
+color: slate
+cardBlur: sm
+
+### Layout Settings
+layout:
+  User Group:
+    tab: Employees
+    # icon: mdi-account-check-#00796B
+    style: row
+    columns: 1
+    header: false
+    initiallyCollapsed: false
+
+    Cameras:
+      icon: mdi-cctv-#9C27B0
+      style: row
+      columns: 1
+      header: true
+      initiallyCollapsed: false
+
+    Automation:
+      icon: mdi-home-automation-#0099ff
+      style: row
+      columns: 1
+      header: true
+      initiallyCollapsed: false
+
+  Admin Group:
+    tab: Administrators
+    # icon: mdi-security-#0033ff
+    style: row
+    columns: 1
+    header: false
+    initiallyCollapsed: false
+
+    Administration:
+      icon: mdi-account-lock-#ff6600
+      style: row
+      rows: 2
+      header: true
+      initiallyCollapsed: false
+
+    Monitoring:
+      icon: mdi-monitor-dashboard-#00ff99
+      style: row
+      rows: 2
+      header: true
+      initiallyCollapsed: false
+
+providers:
+  openweathermap: openweathermapapikey

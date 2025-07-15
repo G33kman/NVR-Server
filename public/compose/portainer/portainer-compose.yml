@@ -1,0 +1,63 @@
+services:
+  portainer: # Docker Container Management
+    container_name: ${APP_NAME}
+    image: "${REPO}/${NAME}:${TAG}"
+    env_file:
+      - ${DIR_ROOT}/.env
+      - ${APP_NAME}.env
+    volumes:
+      - "${SYS_TIME}"
+      - "${}_data:${DIR_INT_DATA}"
+    security_opt:
+      - ${PRIVILEGES_DEFAULT}
+    privileged: false
+    restart: ${RESTART_NORMAL}
+    depends_on:
+      traefik:
+        condition: service_healthy
+    deploy:
+      resources:
+        limits:
+          cpus: '${CPU_LIMIT}'
+          memory: '${RAM_LIMIT}'
+        reservations:
+          cpus: '${CPU_RESERVE}'
+          memory: '${RAM_RESERVE}'
+    healthcheck:
+      test: ["CMD", "${HC_CMD}", "${APP_NAME}"]
+      interval: ${HC_INTERVAL}
+      timeout: ${HC_TIMEOUT}
+      retries: ${HC_RETRIES}
+      start_period: ${HC_START_PERIOD}
+      start_interval: ${HC_START_INTERVAL}
+    command: -H ${DOCKER_HOST}
+    hostname: ${APP_NAME}
+    networks:
+      internal:
+        ipv4_address: ${IP_INTERNAL}
+      private:
+        ipv4_address: ${IP_PRIVATE}
+      public:
+        ipv4_address: ${IP_PUBLIC}
+    secrets:
+      - ADMIN_USERNAME
+      - ADMIN_PASSWORD
+      - API_KEY_PORTAINER
+    labels:
+      ## Custom Labels
+      - "${LABEL_DOMAIN}=${APP_NAME}"
+      ## Traefik
+      - "traefik.enable=true"
+      - "${TR_RTR}.entrypoints=websecure"
+      - "${TR_RTR}.rule=Host(`${APP_NAME}.${DOMAIN_NAME}`) || Host(`www.${APP_NAME}.${DOMAIN_NAME}`)"
+      - "${TR_RTR}.middlewares=chain-no-auth@file" # Portainer doesn't play well with basic auth
+      - "${TR_RTR}.service=${APP_NAME}-svc"
+      - "${TR_SVC}.loadbalancer.server.port=${PORT_HTTP}"
+      ## Portainer Access
+      - "io.${APP_NAME}.accesscontrol.teams=API-Team"
+      ## Kuma Internal Monitor Route
+      - "${TR_RTR_KUMA}.rule=Host(`${APP_NAME}.example.com`) && PathPrefix(`/`)"
+      - "${TR_RTR_KUMA}.entrypoints=websecure"
+      - "${TR_RTR_KUMA}.priority=20"
+      - "${TR_RTR_KUMA}.service=${APP_NAME}-svc"
+      - "${TR_RTR_KUMA}.middlewares=middlewares-internal-only@file,chain-no-auth@file"

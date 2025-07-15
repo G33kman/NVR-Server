@@ -1,0 +1,23 @@
+# NOTES: ######################################################################################################
+  # @description: This will create a hashed password for a user, using the authelia image.
+  #   Make sure to use the specific image tag, not the latest tag.
+  # EXAMPLE:
+  # @command: sudo docker run -it authelia/authelia:4.39.1 authelia crypto hash generate argon2 --password STRONG_PASSWORD_HERE
+  # @output: Digest: $argon2id$v=19$m=65536,t=3,p=MY_HASHED_PASSWORD_VALUE
+###############################################################################################################
+
+# List of users
+users:
+
+  adminUser:
+    displayname: "Administrator Name"
+    password: "$argon2id$v=19$m=65536,t=3,p=<HASHED_ADMIN_PASSWORD_VALUE>"
+    email: admin@example.com
+    groups:
+      - Admins
+  basicUser:
+    displayname: "User Name"
+    password: "$argon2id$v=19$m=65536,t=3,p=<HASHED_USER_PASSWORD_VALUE>"
+    email: user@example.com
+    groups:
+      - Users

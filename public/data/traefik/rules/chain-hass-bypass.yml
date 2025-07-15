@@ -1,0 +1,8 @@
+http:
+  middlewares:
+    chain-hass-bypass:
+      chain:
+        middlewares:
+          - middlewares-rate-limit
+          - middlewares-secure-headers
+          - middlewares-hass-bypass

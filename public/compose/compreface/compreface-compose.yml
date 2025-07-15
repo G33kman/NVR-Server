@@ -1,0 +1,62 @@
+services:
+  compreface: # Facial Recognition Service for Frigate
+    container_name: ${APP_NAME}
+    image: "${REPO}/${NAME}:${TAG}"
+    env_file:
+      - ${DIR_ROOT}/.env
+      - ${APP_NAME}.env
+    volumes:
+      - "${SYS_TIME}"
+      - "compreface_data:${DIR_INT_DB}"
+    security_opt:
+      - ${PRIVILEGES_DEFAULT}
+    privileged: false
+    restart: ${RESTART_NORMAL}
+    runtime: nvidia
+    depends_on:
+      mqtt:
+        condition: service_healthy
+    deploy:
+      resources:
+        limits:
+          cpus: '${CPU_LIMIT}'
+          memory: '${RAM_LIMIT}'
+        reservations:
+          cpus: '${CPU_RESERVE}'
+          memory: '${RAM_RESERVE}'
+          devices:
+            - driver: nvidia
+              count: 1
+              capabilities: [gpu]
+    healthcheck:
+      test: ["CMD-SHELL", "curl -f ${HC_COMPREFACE_CMD} || exit 1"]
+    hostname: ${APP_NAME}
+    # user: "${PUID}:${PGID}" # DO NOT USE
+    networks:
+      private:
+        ipv4_address: ${IP_PRIVATE}
+      public:
+        ipv4_address: ${IP_PUBLIC}
+    secrets:
+      - source: POSTGRES_USER_PASSWORD
+        target: postgresql_user_password.secret
+    labels:
+      ## Custom Labels
+      - "${LABEL_DOMAIN}=${APP_NAME}"
+      ## Traefik Labels
+      - "traefik.enable=true"
+      # Authenticated Router (Web UI)
+      - "${TR_RTR}.entrypoints=websecure"
+      - "${TR_RTR}.rule=Host(`${APP_NAME}.${DOMAIN_NAME}`) || Host(`www.${APP_NAME}.${DOMAIN_NAME}`)"
+      - "${TR_RTR}.middlewares=chain-${APP_NAME}-authelia-noauth@file"
+      - "${TR_RTR}.priority=50"
+      - "${TR_RTR}.service=${APP_NAME}-svc"
+      - "${TR_SVC}.loadbalancer.server.port=${PORT_HTTP}"
+      ## Portainer Access
+      - "io.portainer.accesscontrol.teams=API-Team"
+      ## Kuma Internal Monitor Route
+      - "${TR_RTR_KUMA}.rule=Host(`${APP_NAME}.${DOMAIN_NAME}`) || Host(`www.${APP_NAME}.${DOMAIN_NAME}`)"
+      - "${TR_RTR_KUMA}.entrypoints=websecure"
+      - "${TR_RTR_KUMA}.priority=20"
+      - "${TR_RTR_KUMA}.service=${APP_NAME}-svc"
+      - "${TR_RTR_KUMA}.middlewares=middlewares-internal-only@file,chain-no-auth@file"

@@ -1,0 +1,70 @@
+services:
+  gotify: # A simple server for sending and receiving messages
+    container_name: ${APP_NAME}
+    image: "${REPO}/${NAME}:${TAG}"
+    env_file:
+      - ${DIR_ROOT}/.env
+      - ${APP_NAME}.env
+    volumes:
+      - "${SYS_TIME}"
+      - "${APP_NAME}_data:${DIR_INT_CONFIG}"
+      - "${DIR_DATA}/${APP_NAME}/config/config.yml:${DIR_INT_CONFIG}/config.yml:ro"
+      - "${DIR_DATA}/${APP_NAME}/data/entrypoint.sh:${DIR_INT_BASE}/entrypoint.sh:ro"
+    entrypoint: ["/bin/sh", "/app/entrypoint.sh"]
+    security_opt:
+      - ${PRIVILEGES_DEFAULT}
+    privileged: false
+    restart: ${RESTART_NORMAL}
+    depends_on:
+      traefik:
+        condition: service_healthy
+    deploy:
+      resources:
+        limits:
+          cpus: '${CPU_LIMIT}'
+          memory: '${RAM_LIMIT}'
+        reservations:
+          cpus: '${CPU_RESERVE}'
+          memory: '${RAM_RESERVE}'
+    healthcheck:
+      test: ["CMD", "${HC_CMD}", "${APP_NAME}-app"]
+      interval: ${HC_INTERVAL}
+      timeout: ${HC_TIMEOUT}
+      retries: ${HC_RETRIES}
+      start_period: ${HC_START_PERIOD}
+      start_interval: ${HC_START_INTERVAL}
+    hostname: ${APP_NAME}
+    # user: "${PUID}:${PGID}"
+    networks:
+      private:
+        ipv4_address: ${IP_PRIVATE}
+      public:
+        ipv4_address: ${IP_PUBLIC}
+    secrets:
+      - GOTIFY_ADMIN_PASSWORD
+    labels:
+      ## Custom Labels
+      - "${LABEL_DOMAIN}=${APP_NAME}"
+      ## Traefik Labels
+      - "traefik.enable=true"
+      # Unauthenticated Router (API)
+      - "${TR_RTR_BPS}.entrypoints=websecure"
+      - "${TR_RTR_BPS}.service=${APP_NAME}-svc"
+      - "${TR_RTR_BPS}.rule=Host(`${APP_NAME}.${DOMAIN_NAME}`) || Host(`www.${APP_NAME}.${DOMAIN_NAME}`) && PathRegexp(`^/(api.*|client.*|message.*|application.*|current/user.*|user.*|plugin.*|version|health|static/.*|favicon\\.ico)$`)"
+      - "${TR_RTR_BPS}.middlewares=chain-${APP_NAME}-bypass@file"
+      - "${TR_RTR_BPS}.priority=100"
+      # Authenticated Router (Web UI)
+      - "${TR_RTR}.entrypoints=websecure"
+      - "${TR_RTR}.rule=Host(`${APP_NAME}.${DOMAIN_NAME}`) || Host(`www.${APP_NAME}.${DOMAIN_NAME}`)"
+      - "${TR_RTR}.middlewares=chain-${APP_NAME}-authelia-noauth@file"
+      - "${TR_RTR}.priority=50"
+      - "${TR_RTR}.service=${APP_NAME}-svc"
+      - "${TR_SVC}.loadbalancer.server.port=${PORT_HTTP}"
+      ## Portainer Access
+      - "io.portainer.accesscontrol.teams=API-Team"
+      ## Kuma Internal Monitor Route
+      - "${TR_RTR_KUMA}.rule=Host(`${APP_NAME}.${DOMAIN_NAME}`) || Host(`www.${APP_NAME}.${DOMAIN_NAME}`)"
+      - "${TR_RTR_KUMA}.entrypoints=websecure"
+      - "${TR_RTR_KUMA}.priority=20"
+      - "${TR_RTR_KUMA}.service=${APP_NAME}-svc"
+      - "${TR_RTR_KUMA}.middlewares=middlewares-internal-only@file,chain-no-auth@file"

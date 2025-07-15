@@ -1,0 +1,9 @@
+http:
+  middlewares:
+    chain-compreface-authelia-noauth:
+      chain:
+        middlewares:
+          - middlewares-rate-limit
+          - middlewares-secure-headers
+          - middlewares-cors-headers
+          - middlewares-compreface-authelia-noauth

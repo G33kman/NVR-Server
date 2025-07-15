@@ -1,0 +1,176 @@
+/* Import Poppins and Merriweather fonts from Google Fonts */
+@import url("https://fonts.googleapis.com/css2?family=Poppins:wght@400;700&family=Merriweather:wght@400;700&display=swap");
+
+:root {
+  /* Typography Section */
+  --font-primary: "Poppins", sans-serif;
+  --font-secondary: "Merriweather", serif;
+
+  /* Brand Colors */
+  --color-white-rgb: 234, 234, 234;
+  --color-black-rgb: 42, 42, 42;
+  --color-blue-light-rgb: 0, 153, 255;
+  --color-blue-dark-rgb: 0, 102, 255;
+  --color-orange-light-rgb: 255, 153, 0;
+  --color-orange-dark-rgb: 255, 102, 0;
+
+  /* Border Styling */
+  --border-radius: 0.375rem;
+  --border-width: 2px;
+  --border-radius-sm: 0.275rem;
+
+  /* Box Shadow Styling */
+  --box-shadow-sm: 0.3;
+
+  /* Tab Styling */
+  --tab-border-width: 2px;
+  --tab-border-radius: 0.375rem;
+  --tab-backdrop-filter: blur(1px);
+
+  /* Gradient Styling */
+  --gradient-border: linear-gradient(
+    90deg,
+    var(--color-orange-light-rgb),
+    var(--color-blue-light-rgb),
+    var(--color-orange-dark-rgb)
+  );
+
+  /* Opacity Styling */
+  --opacity-low: 0.2;
+  --opacity-med: 0.4;
+  --opacity-high: 0.8;
+  --opacity-full: 1;
+
+  /* Spacing Section */
+  --spacing-xs: 5px;
+  --spacing-sm: 8px;
+  --spacing-md: 10px;
+  --spacing-lg: 30px;
+  --spacing-xl: 40px;
+
+  /* Animation Section */
+  --transition-duration: 0.3s;
+}
+
+body {
+  font-family: var(--font-primary);
+}
+
+.mr-3 {
+  margin: 0 auto;
+}
+
+.h-10 {
+  height: calc(var(--spacing) * 15);
+}
+
+.resource-icon {
+  color: rgba(var(--color-orange-light-rgb), var(--opacity-high))
+}
+
+div#information-widgets-right {
+  width: 100%;
+}
+
+.information-widget-greeting {
+  height: fit-content;
+  width: auto;
+  align-self: center;
+  border: 2px solid rgba(var(--color-blue-light-rgb), var(--opacity-high));
+  background-color: rgba(var(--color-black-rgb), var(--opacity-med));
+  border-radius: var(--border-radius);
+  padding: var(--spacing-md);
+  box-shadow: 0 4px 6px -1px rgba(var(--color-black-rgb), var(--opacity-low)),
+    0 2px 4px -1px rgba(var(--color-black-rgb), var(--opacity-low));
+  transition: background-color var(--transition-duration) ease,
+    color var(--transition-duration) ease,
+    border-color var(--transition-duration) ease, transform 0.2s ease;
+  cursor: pointer;
+}
+
+.information-widget-greeting span {
+  color: rgba(var(--color-blue-light-rgb), var(--opacity-full));
+  font-size: 1.25em;
+  margin-right: 0;
+  text-transform: uppercase;
+  text-shadow: 1px 1px 2px rgba(var(--color-white-rgb), var(--opacity-med));
+  box-shadow: 0 4px 6px -1px rgba(var(--color-black-rgb), var(--opacity-low)),
+    0 2px 4px -1px rgba(var(--color-black-rgb), var(--opacity-low));
+  transition: color var(--transition-duration) ease,
+    text-shadow var(--transition-duration) ease;
+}
+
+.information-widget-greeting:hover {
+  background-color: rgba(var(--color-blue-light-rgb), var(--opacity-low));
+  border-color: rgba(var(--color-white-rgb), var(--opacity-full));
+  transform: scale(1.02);
+  box-shadow: 0 10px 20px -5px rgba(var(--color-blue-light-rgb), var(--opacity-med));
+}
+
+.information-widget-greeting:hover span {
+  color: rgba(var(--color-white-rgb), var(--opacity-high));
+  text-shadow: none;
+}
+
+@keyframes background-change {
+  0% {
+    background-color: rgba(var(--color-white-rgb), var(--opacity-low));
+  }
+  100% {
+    background-color: rgba(var(--color-blue-light-rgb), var(--opacity-med));
+  }
+}
+
+.information-widget-greeting:hover {
+  animation: background-change var(--transition-duration) forwards;
+}
+
+/* --- Tab Button Styling --- */
+button[role="tab"] {
+  border: var(--tab-border-width) solid transparent;
+  border-bottom: var(--tab-border-width) solid transparent;
+  border-radius: var(--tab-border-radius) var(--tab-border-radius) 0 0;
+  padding: var(--spacing-md) var(--spacing-lg);
+  margin-right: var(--spacing-xs);
+  background-color: rgba(var(--color-white-rgb), var(--opacity-high));
+  color: rgba(var(--color-black-rgb), var(--opacity-high));
+  font-family: var(--font-primary);
+  font-weight: bold;
+  cursor: pointer;
+  transition: border-color var(--transition-duration) ease, background-color var(--transition-duration) ease, color var(--transition-duration) ease;
+  backdrop-filter: var(--tab-backdrop-filter);
+}
+
+button[role="tab"]:hover {
+  background-color: rgba(var(--color-blue-light-rgb), var(--opacity-low));
+  border-color: rgba(var(--color-blue-light-rgb), var(--opacity-med));
+  border-bottom-color: rgba(var(--color-blue-light-rgb), var(--opacity-high));
+  color: rgba(var(--color-blue-dark-rgb), var(--opacity-med));
+  box-shadow: 0 2px 5px rgba(var(--color-blue-light-rgb), var(--box-shadow-sm));
+}
+
+button[role="tab"][aria-selected="true"] {
+  background-color: rgba(var(--color-orange-dark-rgb), var(--opacity-low));
+  border-color: rgba(var(--color-orange-dark-rgb), var(--opacity-med));
+  border-bottom-color: rgba(var(--color-orange-dark-rgb), var(--opacity-high));
+  color: rgba(var(--color-white-rgb), var(--opacity-full));
+}
+
+.dark button[role="tab"] {
+  background-color: rgba(var(--color-black-rgb), var(--opacity-high));
+  color: rgba(var(--color-white-rgb), var(--opacity-med));
+}
+
+.dark button[role="tab"]:hover {
+  background-color: rgba(var(--color-blue-dark-rgb), var(--opacity-med));
+  border-color: rgba(var(--color-blue-light-rgb), var(--opacity-med));
+  border-bottom-color: rgba(var(--color-blue-light-rgb), var(--opacity-high));
+  color: rgba(var(--color-white-rgb), var(--opacity-full));
+}
+
+.dark button[role="tab"][aria-selected="true"] {
+  background-color: rgba(var(--color-orange-light-rgb), var(--opacity-med));
+  border-color: rgba(var(--color-orange-dark-rgb), var(--opacity-low));
+  border-bottom-color: rgba(var(--color-orange-dark-rgb), var(--opacity-high));
+  color: rgba(var(--color-white-rgb), var(--opacity-full));
+}

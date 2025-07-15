@@ -1,0 +1,50 @@
+services:
+  socket: # Security Enchanced Proxy for Docker Socket 
+    container_name: ${APP_NAME}
+    image: "${REPO}/${NAME}:${TAG}"
+    env_file:
+      - ${DIR_ROOT}/.env
+      - ${APP_NAME}.env
+    volumes:
+      - "${SYS_SOCKET}"
+      - "${SYS_TIME}"
+    security_opt:
+      - ${PRIVILEGES_SPECIAL}
+    command: # This is stupid but required
+      - '-allowGET=/version|/_ping|/v1\.\d+/_ping|/v1\.\d+/version|/v1\.\d+/info|/v1\.\d+/containers/json|/containers/json|/v1\.\d+/containers/.*/json|/containers/.*/json|/v1\.\d+/containers/.*/top|/v1\.\d+/containers/.*/stats|/v1\.\d+/containers/.*/logs|/v1\.\d+/images/json|/v1\.\d+/volumes|/v1\.\d+/networks|/v1\.\d+/volumes\?filters=.*|/v1\.\d+/volumes/.*|/v1\.\d+/plugins|/v1\.\d+/networks/.*|/v1\.\d+/events.*|/v1\.\d+/containers/json\?.*network=.*|/containers/json\?.*|/v1\.\d+/images/.*/json'
+      - '-allowHEAD=/_ping'
+      - '-allowPOST=/v1\.\d+/containers/.*/(start|stop|restart|pause|unpause|create|rename|update|prune)|/v1\.\d+/images/.*/(create|push)|/v1\.\d+/networks/.*/(create|connect|disconnect|prune)|/v1\.\d+/volumes/.*/(create|prune)|/v1\.\d+/volumes/create|/v1\.\d+/networks/create'
+      - '-allowPUT=/v1\.\d+/containers/.*/(update|rename)'
+      - '-allowDELETE=/v1\.\d+/images/.*|/v1\.\d+/volumes/.*|/v1\.\d+/networks/.*|/v1\.\d+/containers/.*'
+      - '-allowOPTIONS=/v1\.\d+/version|/v1\.\d+/containers/.*|/v1\.\d+/events.*|/v1\.\d+/images/.*|/v1\.\d+/networks/.*|/v1\.\d+/volumes/.*'
+    privileged: true
+    restart: ${RESTART_NORMAL}
+    deploy:
+      resources:
+        limits:
+          cpus: '${CPU_LIMIT}'
+          memory: '${RAM_LIMIT}'
+        reservations:
+          cpus: '${CPU_RESERVE}'
+          memory: '${RAM_RESERVE}'
+    ulimits:
+      nofile:
+        soft: ${UL_SOFT}
+        hard: ${UL_HARD}
+    hostname: ${APP_NAME}
+    user: "${PUID}:${PGID}"
+    healthcheck:
+      test: ["CMD", "./healthcheck"]
+      interval: ${HC_INTERVAL}
+      timeout: ${HC_TIMEOUT}
+      retries: ${HC_RETRIES}
+      start_period: ${HC_START_PERIOD}
+      start_interval: ${HC_START_INTERVAL}
+    networks:
+      internal:
+        ipv4_address: ${IP_INTERNAL}
+    labels:
+      ## Custom Labels
+      - "${LABEL_DOMAIN}=${APP_NAME}"
+      ## Portainer Access
+      - "io.portainer.accesscontrol.teams=API-Team"

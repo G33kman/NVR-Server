@@ -1,0 +1,14 @@
+http:
+  middlewares:
+    middlewares-cors-headers:
+      headers:
+        accessControlAllowOriginList:
+          - 'https://gotify.example.com'
+        accessControlAllowMethods:
+          - GET
+          - OPTIONS
+          - POST
+        accessControlAllowHeaders:
+          - Authorization
+          - Content-Type
+        addVaryHeader: true

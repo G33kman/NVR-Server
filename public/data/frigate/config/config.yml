@@ -1,0 +1,279 @@
+# Audio Section
+audio:
+  enabled: false
+
+# Authentication Section
+auth:
+  enabled: false
+
+# Proxy Section
+proxy:
+  header_map:
+    user: Remote-User
+    role: Remote-Groups
+  logout_url: https://authelia.example.com/logout
+  # auth_secret: none
+  default_role: viewer
+  separator: ','
+
+# Birdseye View Section (Not going to use)
+birdseye:
+  enabled: false
+
+# Camera Section
+cameras:
+  # Camera 1
+  cam_1:
+    audio:
+      enabled: false
+    detect:
+      enabled: false
+    enabled: true
+    ffmpeg:
+      inputs:
+        - path: rtsp://localhost:8554/cam_1_main
+          roles:
+            - record
+    snapshots:
+      enabled: false
+    live:
+      height: 1080
+      quality: 8
+      streams:
+        cam_1_main: cam_1_main
+
+  # Camera 2
+  cam_2:
+    audio:
+      enabled: false
+    detect:
+      enabled: true
+      fps: 5
+    enabled: true
+    ffmpeg:
+      inputs:
+        - path: rtsp://localhost:8554/cam_2_main
+          roles:
+            - record
+        - path: rtsp://localhost:8554/cam_2_sub
+          roles:
+            - detect
+    live:
+      height: 1080
+      quality: 8
+      streams:
+        cam_2_main: cam_2_main
+    motion:
+      mask:
+        - 0.429,0.6,0.431,0.683,0.482,0.678,0.481,0.596
+        - 0.579,0.12,0.64,0.12,0.644,0.225,0.583,0.23
+      threshold: 60
+      contour_area: 20
+      improve_contrast: true
+    mqtt:
+      bounding_box: true
+      crop: true
+      enabled: true
+      quality: 90
+      height: 1080
+      required_zones:
+        - cam_2_zone
+      timestamp: false
+    objects:
+      track:
+        - person
+    review:
+      detections:
+        required_zones: cam_2_zone
+    snapshots:
+      bounding_box: false
+      clean_copy: true
+      crop: true
+      enabled: true
+      quality: 90
+      required_zones:
+        - cam_2_zone
+      retain:
+        default: 3
+      timestamp: false
+    zones:
+      cam_2_zone:
+        coordinates: 
+          0.87,0.296,0.602,0.284,0.419,0.297,0.174,0.33,0.076,0.712,0.275,0.736,0.695,0.705,0.856,0.649
+        inertia: 3
+        loitering_time: 0
+        objects:
+          - person
+
+# Camera Groups Section
+camera_groups:
+  Live_Group:
+    order: 1
+    icon: LuChevronsRightLeft
+    cameras:
+      - cam_1
+      - cam_2
+
+# Detection Section
+detect:
+  enabled: false
+
+# Detector Section
+detectors:
+  coral:
+    device: pci
+    type: edgetpu
+
+# Ffmpeg Section
+ffmpeg:
+  global_args: -hide_banner -loglevel warning -threads 2
+  hwaccel_args: preset-nvidia
+  # input_args: preset-rtsp-restream
+  input_args: -rtsp_transport tcp -analyzeduration 10000000 -probesize 10000000 -fflags +genpts -an
+  output_args:
+    detect: -threads 2 -f rawvideo -pix_fmt yuv420p
+    record: preset-record-generic
+  retry_interval: 10
+
+# Go2RTC Section
+go2rtc:
+  streams:
+    # Camera 1
+    cam_1_sub: 
+      rtsp://<CAM_USERNAME>:<CAM_PASSWORD>@<CAM_IP>:8554/Streaming/Channels/402
+    cam_1_main: 
+      rtsp://<CAM_USERNAME>:<CAM_PASSWORD>@<CAM_IP>:8554/Streaming/Channels/401
+
+    # Camera 2
+    cam_2_sub: 
+      rtsp://<CAM_USERNAME>:<CAM_PASSWORD>@<CAM_IP>:554/cam/realmonitor?channel=1&subtype=1
+    cam_2_main: 
+      rtsp://<CAM_USERNAME>:<CAM_PASSWORD>@<CAM_IP>:554/cam/realmonitor?channel=1&subtype=0
+
+# Log Section
+logger:
+  default: error
+  logs:
+    detector.detector_tpu: warning
+    frigate.app: warning
+    frigate.mqtt: warning
+    frigate.object_detection: warning
+
+# Model Section (TPU)
+model:
+  # EDGE TPU
+  height: 320
+  input_pixel_format: rgb
+  input_tensor: nhwc
+  labelmap:
+    0: person
+  labelmap_path: /labelmap.txt
+  model_type: ssd
+  path: /edgetpu_model.tflite
+  width: 320
+
+# Motion Section
+motion:
+  enabled: true
+  threshold: 40
+  lightning_threshold: 0.8
+  contour_area: 20
+  frame_alpha: 0.01
+  frame_height: 100
+  improve_contrast: true
+  mqtt_off_delay: 30
+
+# MQTT Section
+mqtt:
+  enabled: true
+  host: 10.2.1.15
+  user: <MQTT_USERNAME>
+  password: <MQTT_PASSWORD>
+  port: 1883
+  stats_interval: 15
+
+# Notification Settings
+notifications:
+  enabled: false
+
+# Objects Section
+objects:
+  track:
+    - person
+  filters:
+    person:
+      min_area: 500
+      max_area: 20000
+      threshold: 0.7
+
+# Video Feed Recording
+record:
+  enabled: true
+  expire_interval: 60
+  export: # Change 'setpts' value to change playback speed. 1 = regular speed.
+    timelapse_args: -vf setpts=0.04*PTS -r 30
+  retain:
+    days: 1.0
+    mode: all
+  sync_recordings: true
+
+# Review Section
+review:
+  alerts:
+    enabled: false
+  detections:
+    enabled: false
+
+# Tailored Search for tracked objects, to help when searching through stored video content
+semantic_search:
+  enabled: true
+  model_size: large
+  reindex: false
+
+# Global Snapshot Settings
+snapshots:
+  enabled: true
+  bounding_box: true
+  clean_copy: true
+  crop: true
+  quality: 90
+  retain:
+    default: 3
+    objects:
+      person: 5
+  timestamp: true
+
+# Application Telemetry
+telemetry:
+  network_interfaces:
+    - <DOCKER_HOST_NIC_ID>
+  stats:
+    amd_gpu_stats: false
+    intel_gpu_stats: false
+    network_bandwidth: true
+  version_check: false
+
+# Video Timestamps
+timestamp_style:
+  color:
+    blue: 255
+    green: 255
+    red: 255
+  effect: shadow
+  format: '%m/%d/%Y %H:%M:%S'
+  position: tl
+  thickness: 2
+
+# SSL Certificates (Traefik Handles this)
+tls:
+  enabled: false
+
+# Application UI specific settings
+ui:
+  date_style: short
+  strftime_fmt: '%Y/%m/%d %H:%M'
+  time_format: 12hour
+  time_style: medium
+
+# Application Version
+version: 0.16-0

@@ -1,0 +1,81 @@
+services:
+  frigate: # Locally processed NVR using a Google Coral TPU for Object Detection in Real-Time
+    container_name: ${APP_NAME}
+    image: "${REPO}/${NAME}:${TAG}"
+    env_file:
+      - ${DIR_ROOT}/.env
+      - ${APP_NAME}.env
+    volumes:
+      - "${SYS_TIME}"
+      - "${DIR_DATA}/${APP_NAME}/config:${DIR_INT_CONFIG}"
+      - "${VOL_VIDEOS_CURRENT}:${DIR_INT_CURRENT}"
+      - "${VOL_VIDEOS_ARCHIVES}:${DIR_INT_ARCHIVES}"
+      - type: tmpfs
+        target: ${DIR_INT_CACHE}
+        tmpfs:
+          size: 1000000000 # 1GB
+    shm_size: ${SHM_SIZE}
+    security_opt:
+      - ${PRIVILEGES_DEFAULT}
+    privileged: true
+    restart: ${RESTART_NORMAL}
+    stop_grace_period: 30s
+    cap_add:
+      - CAP_PERFMON
+      - cap_net_admin
+      - cap_net_raw
+    devices:
+      - '${SYS_DEV_INTEL}'
+      - '${SYS_DEV_RTX}'
+      - '${SYS_DEV_TPU}'
+    runtime: nvidia
+    depends_on:
+      mqtt:
+        condition: service_healthy
+    deploy:
+      resources:
+        limits:
+          cpus: '${CPU_LIMIT}'
+          memory: '${RAM_LIMIT}'
+        reservations:
+          cpus: '${CPU_RESERVE}'
+          memory: '${RAM_RESERVE}'
+          devices:
+            - driver: nvidia
+              count: 1
+              capabilities: [gpu]
+    hostname: ${APP_NAME}
+    networks:
+      private:
+        ipv4_address: ${IP_PRIVATE}
+      public:
+        ipv4_address: ${IP_PUBLIC}
+    ports:
+      - "${PORT_HTTP}:${PORT_HTTP}"
+      - "${PORT_API}:${PORT_API}"
+      - "${PORT_RTSP}:${PORT_RTSP}"
+    secrets:
+      # - MQTT Password
+      - source: FRIGATE_MQTT_PASSWORD
+        target: ${DIR_CONTAINER_SECRETS}/FRIGATE_MQTT_PASSWORD
+      # - Traefik JWT Token
+      - source: FRIGATE_JWT_SECRET
+        target: ${DIR_CONTAINER_SECRETS}/FRIGATE_JWT_SECRET
+    labels:
+      ## Custom Labels
+      - "${LABEL_DOMAIN}=${APP_NAME}"
+      ## Traefik Labels
+      - "traefik.enable=true"
+      - "${TR_RTR}.entrypoints=websecure"
+      - "${TR_RTR}.rule=Host(`${APP_NAME}.${DOMAIN_NAME}`) || Host(`www.${APP_NAME}.${DOMAIN_NAME}`)"
+      - "${TR_RTR}.middlewares=chain-authelia@file"
+      ## Frigate Port List
+      - "${TR_SVC}.loadbalancer.server.port=${PORT_HTTP}"
+      ## Portainer Access
+      - "io.portainer.accesscontrol.teams=API-Team"
+      ## Kuma Internal Monitor Route
+      - "${TR_RTR_KUMA}.rule=Host(`${APP_NAME}.${DOMAIN_NAME}`) && PathPrefix(`/`)"
+      - "${TR_RTR_KUMA}.entrypoints=websecure"
+      - "${TR_RTR_KUMA}.priority=20"
+      - "${TR_RTR_KUMA}.service=${APP_NAME}-svc"
+      - "${TR_RTR_KUMA}.middlewares=middlewares-internal-only@file,chain-no-auth@file"

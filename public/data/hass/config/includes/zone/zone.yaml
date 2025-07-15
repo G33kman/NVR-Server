@@ -1,0 +1,5 @@
+  - name: ZONE_NAME
+    latitude: !secret gd_lat
+    longitude: !secret gd_long
+    radius: 50
+    icon: mdi:store-marker-outline

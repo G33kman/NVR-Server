@@ -1,0 +1,55 @@
+### CURL TEST COMMAND
+# curl -X POST "https://gotify.example.com/message" -H "X-Gotify-Key: AKVTDfXWn5g8jwL" -F "title=Test" -F "message=Gotify is now working!" -F "priority=5"
+
+server:
+  keepaliveperiodseconds: 0 # 0 = use Go default (15s);
+  listenaddr: '' # the address to bind on, leave empty to bind on all addresses. Prefix with "unix:" to create a unix socket. Example: "unix:/tmp/gotify.sock".
+  port: 80
+
+  ssl:
+    enabled: false
+    # redirecttohttps: false # Don't need since Traefik handles everything with SSL.
+    # listenaddr: ''
+    # port: 443
+    # certfile:
+    # certkey:
+    # letsencrypt:
+      # enabled: false
+      # accepttos: false
+      # cache: data/certs # the directory of the cache from letsencrypt
+      # hosts: # the hosts for which letsencrypt should request certificates
+        # - mydomain.tld
+        # - myotherdomain.tld
+
+  responseheaders:
+  # X-Custom-Header: "custom value"
+
+  trustedproxies:
+    - 127.0.0.1/32
+    - 192.168.1.0/24
+    - 10.2.1.0/24
+
+  cors:
+    alloworigins:
+      - ".+.example.com"
+    allowmethods:
+      - "GET"
+      - "POST"
+    allowheaders:
+      - "Authorization"
+      - "content-type"
+
+  stream:
+    pingperiodseconds: 45
+    allowedorigins:
+      - "https://gotify.example.com"
+database:
+  dialect: sqlite3
+  connection: data/gotify.db
+# defaultuser: # on database creation, gotify creates an admin user (these values will only be used for the first start, if you want to edit the user after the first start use the WebUI)
+  # name: admin # the username of the default user
+  # pass: /run # the password of the default user
+passstrength: 10
+uploadedimagesdir: data/images
+pluginsdir: data/plugins
+registration: false

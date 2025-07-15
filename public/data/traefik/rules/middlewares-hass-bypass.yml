@@ -1,0 +1,25 @@
+http:
+  middlewares:
+    middlewares-hass-bypass:
+      forwardAuth:
+        address: 'http://authelia:9091/api/authz/forward-auth'
+        trustForwardHeader: true
+        authRequestHeaders:
+          - "Accept"
+          - "Accept-Language"
+          - "Authorization"
+          - "Cookie"
+          - "Host"
+          - "Referer"
+          - "User-Agent"
+          - "X-Forwarded-For"
+          - "X-Forwarded-Host"
+          - "X-Forwarded-Proto"
+        authResponseHeaders:
+          - "Remote-User"
+          - "Remote-Groups"
+          - "Remote-Email"
+          - "Remote-Name"
+        addAuthCookiesToResponse:
+          - "Session-Cookie"
+        headerField: "X-WebAuth-User"
